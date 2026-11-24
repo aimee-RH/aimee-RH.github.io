@@ -1,6 +1,6 @@
 # AI Fieldnotes · Aimee Gao
 
-A bilingual AI research notebook with a knowledge-base sidebar, author’s margin notes, and GitHub Discussions comments.
+A bilingual AI reading notebook in a plain, single-column layout: a README-style home page (who I am, what each note contains, the note list by topic, recent updates), one page per note, and GitHub Discussions comments. No web fonts or UI framework; dark mode follows the system setting.
 
 Live site: https://aimee-rh.github.io/
 
@@ -32,15 +32,13 @@ Run the tests and commit to `main`. GitHub Actions builds and deploys automatica
 
 ## Add your own margin notes
 
-Click “Edit author’s note” on a reading page, or edit `content/notes/<article-id>.json`:
+Edit `content/notes/<article-id>.json`. It appears under “My take / 我的旁注” on the note page:
 
 ```json
 {"zh": "你的中文观点。\n\n另一个段落。", "en": "Your English reflection.\n\nAnother paragraph."}
 ```
 
-Commit to publish. Empty fields deliberately show that no personal note has been written. They are never filled with AI-generated opinions presented as yours.
-
-The optional reading scratchpad uses localStorage only. It is not public and is not synced across devices. Use “Export draft” for a text backup. Never put private material in this public repository, even outside the generated site.
+Commit to publish. Empty fields deliberately show that no personal note has been written. They are never filled with AI-generated opinions presented as yours. Never put private material in this public repository.
 
 ## Comments with giscus
 

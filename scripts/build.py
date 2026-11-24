@@ -43,113 +43,132 @@ def route(lang, article=None):
 def label(lang, zh, en):
     return zh if lang == 'zh' else en
 
-def icon(name):
-    shapes = {
-        'book': '<path d="M3 4.5c3-1 6-.5 9 1.5 3-2 6-2.5 9-1.5v15c-3-1-6-.5-9 1.5-3-2-6-2.5-9-1.5z"/><path d="M12 6v15"/>',
-        'search': '<circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/>',
-        'sun': '<circle cx="12" cy="12" r="4"/><path d="M12 1v2m0 18v2M1 12h2m18 0h2M4 4l1.5 1.5m13 13L20 20M4 20l1.5-1.5m13-13L20 4"/>',
-        'chat': '<path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5H4l-2 2V11.5a9.5 9.5 0 0 1 19 0Z"/><path d="M7 10h9M7 14h6"/>',
-        'pen': '<path d="m15 4 5 5M4 20l4-1 12-12a3 3 0 0 0-4-4L4 15z"/>',
-        'copy': '<rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V3H3v13h5"/>',
-        'rss': '<circle cx="5" cy="19" r="1"/><path d="M4 4a16 16 0 0 1 16 16M4 10a10 10 0 0 1 10 10"/>',
-        'menu': '<path d="M4 6h16M4 12h16M4 18h16"/>',
-        'close': '<path d="m6 6 12 12M6 18 18 6"/>'}
-    return '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + shapes[name] + '</svg>'
-
 def date_text(value, lang):
     d = date.fromisoformat(value)
-    return f'{d.month} 月 {d.day} 日' if lang == 'zh' else d.strftime('%b %d').replace(' 0', ' ')
+    return f'{d.year}/{d.month:02d}/{d.day:02d}' if lang == 'zh' else d.strftime('%b %d, %Y').replace(' 0', ' ')
+
+def topic_name(topic, lang):
+    return TOPICS[topic] if lang == 'zh' else topic
 
 def note_for(article):
     file = ROOT / 'content/notes' / (article['id'] + '.json')
     return json.loads(file.read_text()) if file.exists() else {'zh': '', 'en': ''}
 
-def sidebar(lang, articles, current, cfg):
-    home = route(lang)
-    topics = ''.join(f'<a class="topic-link" href="{home}?topic={quote(t)}"><span>{esc(TOPICS[t] if lang == "zh" else t)}</span><span class="count">{sum(a["topic"] == t for a in articles)}</span></a>' for t in TOPICS if any(a['topic'] == t for a in articles))
-    issues = sorted({a['issue'] for a in articles}, reverse=True)
-    archives = ''.join(f'<a class="archive-link" href="{home}?date={d}"><span class="small-square"></span>{date_text(d, lang)}<span class="count">{sum(a["issue"] == d for a in articles)}</span></a>' for d in issues)
-    return f'''<aside class="sidebar" id="sidebar" aria-label="{label(lang, '站点导航', 'Site navigation')}">
-      <a class="wordmark" href="{home}"><span class="monogram">a<span>.</span></span><span>AI Fieldnotes<small>BY AIMEE GAO</small></span></a>
-      <div class="sidebar-intro">{label(lang, '一间开放的 AI 阅读室。', 'An open notebook on AI.')}</div>
-      <nav><a class="main-nav {'active' if not current else ''}" href="{home}">{icon('book')}{label(lang,'阅读笔记','Reading notes')}<span class="count">{len(articles)}</span></a>
-      <a class="main-nav" href="{home}about/">{icon('sun')}{label(lang,'关于我','About Aimee')}</a>
-      <p class="nav-caption">{label(lang,'按主题探索','EXPLORE TOPICS')}</p>{topics}
-      <p class="nav-caption">{label(lang,'每日归档','DAILY ARCHIVE')}</p>{archives}</nav>
-      <div class="sidebar-bottom"><span class="leaf-mark">✳</span><p>{label(lang,'保持好奇，把思考写下来。','Stay curious. Leave a margin.')}</p><a href="{esc(cfg['github'])}" target="_blank" rel="noopener">GitHub</a><span>·</span><a href="{esc(cfg['linkedin'])}" target="_blank" rel="noopener">LinkedIn</a></div>
-    </aside>'''
+def about_url(lang):
+    return route(lang) + 'about/'
 
-def shell(lang, articles, cfg, body, title, description, path, current=None):
-    alternate = route('en' if lang == 'zh' else 'zh', current) if path != 'about/' else ('/en/about/' if lang == 'zh' else '/about/')
-    actual = route(lang, current) if path != 'about/' else ('/en/about/' if lang == 'en' else '/about/')
+def shell(lang, cfg, body, title, description, actual, alternate, is_article=False):
     canonical = cfg['url'] + actual
-    nav = sidebar(lang, articles, current, cfg)
+    other = 'en' if lang == 'zh' else 'zh'
     return f'''<!doctype html><html lang="{'zh-CN' if lang == 'zh' else 'en'}"><head>
-      <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-      <title>{esc(title)} · AI Fieldnotes</title><meta name="description" content="{esc(description)}">
-      <meta name="theme-color" content="#176b58"><link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-      <link rel="canonical" href="{esc(canonical)}"><link rel="alternate" hreflang="{'en' if lang == 'zh' else 'zh-CN'}" href="{cfg['url']}{alternate}">
-      <meta property="og:type" content="{'article' if current else 'website'}"><meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(description)}"><meta property="og:url" content="{esc(canonical)}"><meta property="og:site_name" content="AI Fieldnotes">
-      <link rel="alternate" type="application/rss+xml" title="AI Fieldnotes" href="/feed.xml">
-      <link rel="stylesheet" href="/assets/style.css"><script src="/assets/app.js" defer></script>
-      </head><body data-lang="{lang}" data-article="{esc(current or '')}">
-      <a class="skip-link" href="#main">{label(lang,'跳到正文','Skip to content')}</a>{nav}<button class="scrim" aria-label="{label(lang,'关闭目录','Close navigation')}" hidden></button>
-      <div class="workspace"><header class="topbar"><div class="breadcrumb"><button class="icon-button mobile-menu" aria-label="{label(lang,'打开目录','Open navigation')}" aria-expanded="false">{icon('menu')}</button><span>FIELDNOTES</span><span class="crumb-divider">/</span><span>{label(lang,'阅读、提问、连接','Read. Question. Connect.')}</span></div>
-      <div class="top-actions"><a class="language" href="{alternate}" lang="{'en' if lang == 'zh' else 'zh'}">{label(lang,'EN','中文')}</a><a class="icon-button" href="/feed.xml" aria-label="RSS">{icon('rss')}</a><a class="profile-dot" href="{route(lang)}about/" aria-label="About Aimee">A</a></div></header>
-      <main id="main">{body}</main><footer class="footer"><span>© {date.today().year} Aimee Gao</span><span>{label(lang,'AI 辅助整理 · 原文归原作者所有','AI-assisted summaries · Original work belongs to its authors')}</span><a href="https://github.com/{cfg['repository']}">{label(lang,'本站源码','Source')}</a></footer></div>
-      <div class="toast" role="status" aria-live="polite"></div></body></html>'''
-
-def art_svg():
-    return '''<svg class="book-art" viewBox="0 0 280 220" fill="none" aria-hidden="true"><circle cx="147" cy="109" r="85" fill="#e1f2e9"/><circle cx="212" cy="46" r="19" fill="#d6ed9e"/><path d="M58 69q44-13 85 12 35-24 78-11l-9 107q-35-9-69 12-44-21-89-12z" fill="white" stroke="#176b58" stroke-width="2"/><path d="M143 81v108M74 95l48 10M73 111l49 10M72 127l35 8M162 104l40-8M161 120l39-7M162 136l25-4" stroke="#83ad9b" stroke-width="2" stroke-linecap="round"/><path d="m196 146 26-70 9-8 3 12-27 70-12 12z" fill="#176b58"/><path d="m222 76 11 4" stroke="#d6ed9e" stroke-width="3"/><path d="M39 49q21 0 22-22-23 1-22 22zM49 51l8-14" fill="#d5e99b" stroke="#176b58"/><path d="m250 143-9 4m9-15-8 3M104 30v13m-6-6h13" stroke="#176b58" stroke-width="1.5" stroke-linecap="round"/><path d="M59 197q87 9 161-1" stroke="#c9ddd2" stroke-width="2" stroke-linecap="round"/></svg>'''
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{esc(title)} · AI Fieldnotes</title><meta name="description" content="{esc(description)}">
+<meta name="theme-color" content="#4870ac"><link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="canonical" href="{esc(canonical)}"><link rel="alternate" hreflang="{'en' if lang == 'zh' else 'zh-CN'}" href="{cfg['url']}{alternate}">
+<meta property="og:type" content="{'article' if is_article else 'website'}"><meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(description)}"><meta property="og:url" content="{esc(canonical)}"><meta property="og:site_name" content="AI Fieldnotes">
+<link rel="alternate" type="application/rss+xml" title="AI Fieldnotes" href="/feed.xml">
+<link rel="stylesheet" href="/assets/style.css"><script src="/assets/app.js" defer></script>
+</head><body data-lang="{lang}">
+<a class="skip-link" href="#main">{label(lang,'跳到正文','Skip to content')}</a>
+<header class="site-header"><a class="site-name" href="{route(lang)}">AI Fieldnotes</a>
+<nav aria-label="{label(lang,'站点导航','Site')}"><a href="{route(lang)}">{label(lang,'笔记','Notes')}</a><a href="{about_url(lang)}">{label(lang,'关于','About')}</a><a href="/feed.xml">RSS</a><a href="{alternate}" lang="{other if other == 'en' else 'zh-CN'}">{label(lang,'EN','中文')}</a></nav></header>
+<main id="main">{body}</main>
+<footer class="site-footer">© {date.today().year} Aimee Gao · {label(lang,'摘要由 AI 辅助整理，原文归原作者所有','AI-assisted summaries; original work belongs to its authors')} · <a href="https://github.com/{cfg['repository']}">{label(lang,'源码','Source')}</a></footer>
+</body></html>'''
 
 def home_page(lang, articles, cfg):
-    latest = max(a['issue'] for a in articles)
-    featured = articles[0]
-    chips = ''.join(f'<button class="filter" data-topic="{t}">{esc(TOPICS[t] if lang == "zh" else t)}</button>' for t in ('Training','Memory','Science','Architecture','Safety'))
+    topics_in_use = [t for t in TOPICS if any(a['topic'] == t for a in articles)]
     rows = []
-    for a in articles:
-        search = esc(' '.join([a['title'][lang], a['original'], a['source'], a['intro'][lang], a['topic'], TOPICS[a['topic']]]).lower())
-        rows.append(f'''<article class="entry" data-topic="{a['topic']}" data-date="{a['issue']}" data-search="{search}"><div class="entry-date"><span>{date_text(a['issue'],lang)}</span><small>{a['issue'][:4]}</small></div><div class="entry-content"><div class="entry-meta"><span class="tag">{TOPICS[a['topic']] if lang == 'zh' else a['topic']}</span><span>{esc(a['source'])}</span><span>{a['minutes']} {label(lang,'分钟','min')}</span></div><h3><a href="{route(lang,a['id'])}">{esc(a['title'][lang])}</a></h3><p>{esc(a['intro'][lang])}</p><div class="entry-bottom"><span class="original-title">{esc(a['original'])}</span><span class="note-indicator">{icon('pen')}{label(lang,'旁注与讨论','Notes & discussion')}</span></div></div></article>''')
-    body = f'''<div class="home-grid"><section class="home-content"><div class="hero"><div class="hero-text"><p class="eyebrow">A PERSONAL LEARNING JOURNAL</p><h1>{label(lang,'读得更广，<br>想得更深。','Stay curious.<br>Think in public.')}</h1><p class="hero-subtitle">{label(lang,'我是 Aimee。这里收集值得读的 AI 研究，<br>也给疑问、连接和自己的判断留一点空白。','I’m Aimee. A collection of AI research worth reading,<br>with room for questions, connections, and a point of view.')}</p><a class="text-link" href="{route(lang)}about/">{label(lang,'关于这个笔记本','About this notebook')}</a></div>{art_svg()}</div>
-      <a class="featured" href="{route(lang,featured['id'])}"><div><span class="eyebrow">{label(lang,'本期推荐','FROM THE LATEST EDITION')}</span><h2>{esc(featured['title'][lang])}</h2><p>{esc(featured['intro'][lang])}</p></div><span class="featured-mark">✳</span></a>
-      <div class="section-top"><h2>{label(lang,'最近阅读','The reading desk')}</h2><span id="result-count">{len(articles)} {label(lang,'篇笔记','reading notes')}</span></div>
-      <div class="filter-toolbar"><div class="filters" role="group" aria-label="{label(lang,'主题筛选','Filter by topic')}"><button class="filter selected" data-topic="all">{label(lang,'全部','All notes')}</button>{chips}</div><label class="search">{icon('search')}<input type="search" id="search" aria-label="{label(lang,'搜索文章','Search notes')}" placeholder="{label(lang,'搜索研究、主题…','Search research…')}"></label></div>
-      <div class="active-filter" hidden></div><div class="entries">{''.join(rows)}</div><div class="empty-search" hidden><h3>{label(lang,'还没有找到对应笔记','No matching notes yet')}</h3><p>{label(lang,'试试其他关键词，或清除主题和日期筛选。','Try another keyword, or clear the topic and date filters.')}</p><button class="button" id="clear-filters">{label(lang,'清除筛选','Clear filters')}</button></div></section>
-      <aside class="home-rail"><div class="about-card"><span class="mini-avatar">A<span>✳</span></span><p class="eyebrow">THE PERSON IN THE MARGINS</p><h2>Aimee Gao</h2><p>Georgia Tech · M.S. 2027</p><p class="about-description">{label(lang,'从 AI 研究出发，探索工程、产品与人与技术之间的连接。','Exploring the connections between AI research, engineering, products, and people.')}</p><a class="text-link" href="{route(lang)}about/">{label(lang,'认识 Aimee','Meet Aimee')}</a></div>
-      <div class="margin-card"><span class="eyebrow">IN THE MARGINS</span><h3>{label(lang,'不急着得出结论。','Leave room for a question.')}</h3><p>{label(lang,'每篇文章旁边，都留有作者笔记的位置。阅读之后，让问题继续生长。','Every article has room for author’s notes. A question is a useful place to begin.')}</p><div class="paper-lines"><span></span><span></span><span></span></div></div>
-      <div class="reading-guide"><p class="eyebrow">{label(lang,'如何阅读','HOW TO READ')}</p><p>{label(lang,'先看研究在解决什么，再看证据和边界。原文发布日期与精选日期分别保留。','Start with the problem, then examine the evidence and limitations. Original publication dates remain separate from edition dates.')}</p><p class="latest">{label(lang,'最近一期','Latest edition')} · {latest}</p></div></aside></div>'''
-    return shell(lang, articles, cfg, body, label(lang,'Aimee 的 AI 阅读笔记','AI reading notes by Aimee'), label(lang,'AI 研究精选、中英双语阅读笔记、个人旁注与公开讨论。','Bilingual AI research notes, personal reflections, and open discussion.'), '')
+    for t in topics_in_use:
+        group = [a for a in articles if a['topic'] == t]
+        for i, a in enumerate(group):
+            rows.append(f'''<tr><td class="topic">{esc(topic_name(t, lang)) if i == 0 else ''}</td><td><a href="{route(lang,a['id'])}">{esc(a['title'][lang])}</a></td><td class="muted"><a href="{esc(a['url'])}" target="_blank" rel="noopener">{esc(a['source'])}</a></td><td class="date">{a['issue']}</td></tr>''')
+    updates = ''.join(f'''<li><strong>{date_text(a['issue'], lang)}</strong>: {esc(topic_name(a['topic'], lang))} → <a href="{route(lang,a['id'])}">{esc(a['title'][lang])}</a></li>''' for a in articles[:8])
+    body = f'''<article class="prose">
+<h1>AI Fieldnotes</h1>
+<p class="lead">{label(lang,
+  '我是 Aimee，Georgia Tech 在读（M.S. 2027）。这里是我的 AI 阅读笔记：每篇挑一项值得读的研究，讲清楚它在解决什么、证据是什么、边界在哪里，再留一段我自己的判断。',
+  'I’m Aimee, an M.S. student at Georgia Tech (2027). These are my AI reading notes: one piece of research at a time, what it solves, what the evidence shows, where it stops, and what I think about it.')}</p>
+<p class="links"><a href="{esc(cfg['linkedin'])}" target="_blank" rel="noopener">LinkedIn</a> · <a href="{esc(cfg['github'])}" target="_blank" rel="noopener">GitHub</a> · <a href="/feed.xml">{label(lang,'RSS 订阅','Subscribe via RSS')}</a></p>
+
+<h2>{label(lang,'每篇笔记包含','In every note')}</h2>
+<ul>
+<li>{label(lang,'<strong>原文</strong>：直达论文或文章，保留原始发布日期','<strong>Source</strong>: a direct link to the paper or post, with its original date')}</li>
+<li>{label(lang,'<strong>方法与发现</strong>：用两三段话说清楚做了什么、结果如何','<strong>Idea &amp; evidence</strong>: what was done and what came out, in a few paragraphs')}</li>
+<li>{label(lang,'<strong>局限</strong>：证据在哪里停止，哪些结论还不能下','<strong>Limits</strong>: where the evidence stops and what it can’t yet claim')}</li>
+<li>{label(lang,'<strong>我的旁注</strong>：我自己的看法，与 AI 辅助整理的摘要分开','<strong>My take</strong>: my own view, kept separate from the AI-assisted summary')}</li>
+</ul>
+
+<h2>{label(lang,'笔记列表','Notes')}</h2>
+<div class="table-wrap"><table><thead><tr><th>{label(lang,'主题','Topic')}</th><th>{label(lang,'笔记','Note')}</th><th>{label(lang,'来源','Source')}</th><th>{label(lang,'日期','Date')}</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div>
+
+<h2>{label(lang,'为什么写','Why I write this')}</h2>
+<p>{label(lang,
+  'AI 研究更新太快，只读标题很容易被结论带着走。把一篇研究写成几段话，逼自己分清作者的主张、实验的证据和我自己的解读；公开写下来，也方便和做研究、做工程、做产品的朋友交流。',
+  'AI research moves fast, and headlines make it easy to adopt conclusions secondhand. Writing a few paragraphs per paper forces me to separate the authors’ claims, the evidence, and my own reading. Doing it in public makes it easier to compare notes with people building research, engineering, and products.')}</p>
+
+<h2>{label(lang,'更新历史','Recent updates')}</h2>
+<ul class="updates">{updates}</ul>
+</article>'''
+    return shell(lang, cfg, body, label(lang,'Aimee 的 AI 阅读笔记','AI reading notes by Aimee'),
+                 label(lang,'AI 研究精选、中英双语阅读笔记与个人观点。','Bilingual AI research notes with a personal point of view.'),
+                 route(lang), route('en' if lang == 'zh' else 'zh'))
 
 def article_page(lang, a, articles, cfg):
     note = note_for(a).get(lang, '').strip()
-    note_html = ''.join(f'<p>{esc(p)}</p>' for p in note.split('\n\n') if p.strip()) if note else f'''<p class="unwritten">{label(lang,'Aimee 还没有发布这篇的个人旁注。','Aimee hasn’t published a personal note on this piece yet.')}</p><ul class="note-prompts"><li>{label(lang,'哪里让我改变了看法？','What changed my mind?')}</li><li>{label(lang,'哪些证据还不充分？','Where is the evidence incomplete?')}</li><li>{label(lang,'接下来想验证什么？','What would I test next?')}</li></ul>'''
-    edit = f'https://github.com/{cfg["repository"]}/edit/main/content/notes/{a["id"]}.json'
+    if note:
+        note_html = ''.join(f'<p>{esc(p)}</p>' for p in note.split('\n\n') if p.strip())
+    else:
+        note_html = f'<p class="muted">{label(lang,"这篇还没有写旁注。","No personal note on this one yet.")}</p>'
     g = cfg.get('giscus', {})
     ready = bool(g.get('enabled') and g.get('repoId') and g.get('categoryId'))
     discussion_link = f'https://github.com/{cfg["repository"]}/discussions?discussions_q={quote(a["id"])}'
-    discussion = f'<div class="giscus" id="giscus" data-repo="{esc(cfg["repository"])}" data-repo-id="{esc(g.get("repoId", ""))}" data-category="{esc(g.get("category", "General"))}" data-category-id="{esc(g.get("categoryId", ""))}"></div>' if ready else f'<div class="discussion-fallback"><p>{label(lang,"站内评论正在配置中。现在也可以在 GitHub Discussions 交流。","Embedded comments are being connected. You can already start a conversation in GitHub Discussions.")}</p><a class="button" target="_blank" rel="noopener" href="{discussion_link}">{label(lang,"打开 GitHub 讨论区","Open GitHub Discussions")}</a></div>'
-    more = [x for x in articles if x['id'] != a['id']][:2]
-    related = ''.join(f'<a href="{route(lang,x["id"])}"><span>{esc(TOPICS[x["topic"]] if lang == "zh" else x["topic"])}</span>{esc(x["title"][lang])}</a>' for x in more)
-    body = f'''<div class="reader-layout"><article class="reader"><a class="back-link" href="{route(lang)}">{label(lang,'返回阅读笔记','Back to reading notes')}</a><div class="article-category">{esc(TOPICS[a['topic']] if lang == 'zh' else a['topic'])}<span>·</span>{a['minutes']} {label(lang,'分钟重点阅读','min focused reading')}</div><h1>{esc(a['title'][lang])}</h1><p class="article-deck">{esc(a['intro'][lang])}</p>
-      <div class="article-byline"><span class="byline-avatar">A</span><div><strong>AI Fieldnotes</strong><span>{label(lang,'精选于','Curated')} {a['issue']} · {label(lang,'AI 辅助整理','AI-assisted summary')}</span></div><button class="icon-button share-button" aria-label="{label(lang,'复制文章链接','Copy article link')}">{icon('copy')}</button></div>
-      <div class="source-card"><p class="eyebrow">{label(lang,'原始研究 / 文章','ORIGINAL SOURCE')}</p><a href="{esc(a['url'])}" target="_blank" rel="noopener">{esc(a['original'])}</a><p>{esc(a['source'])}<span>·</span>{label(lang,'原始发布','Published')} {a['published']}</p><a class="source-button" href="{esc(a['url'])}" target="_blank" rel="noopener">{label(lang,'阅读原文','Read original')}</a></div>
-      <section class="article-prose" id="findings"><h2>{label(lang,'方法与发现','The idea & the evidence')}</h2>{''.join('<p>'+esc(p)+'</p>' for p in a['body'][lang])}</section>
-      <section class="limitations" id="limits"><span class="eyebrow">{label(lang,'保留一点谨慎','WHERE THE EVIDENCE ENDS')}</span><h2>{label(lang,'局限与待验证','Limits & open questions')}</h2><p>{esc(a['limits'][lang])}</p></section>
-      <section class="reading-path"><span>{icon('book')}</span><div><strong>{label(lang,'建议阅读路径','Suggested reading path')}</strong><p>{esc(a['path'][lang])}</p></div></section>
-      <section class="discussion" id="discussion"><div class="section-top"><h2>{label(lang,'一起讨论','Keep the conversation going')}</h2>{icon('chat')}</div><p class="discussion-intro">{label(lang,'补充证据、提出不同看法，或分享你想到的连接。使用 GitHub 账号参与。','Add evidence, challenge an interpretation, or share a connection. Join with your GitHub account.')}</p>{discussion}</section>
-      <section class="related"><p class="eyebrow">{label(lang,'接着读','CONTINUE READING')}</p>{related}</section></article>
-      <aside class="notes-rail"><div class="on-this-page"><p class="eyebrow">{label(lang,'本文目录','ON THIS PAGE')}</p><a href="#findings">{label(lang,'方法与发现','The idea & the evidence')}</a><a href="#limits">{label(lang,'局限与待验证','Limits & open questions')}</a><a href="#discussion">{label(lang,'读者讨论','Discussion')}</a></div>
-      <section class="author-note"><div class="note-heading">{icon('pen')}<span>{label(lang,'Aimee 的旁注','Aimee’s margin notes')}</span></div><span class="note-label">{label(lang,'作者的观点 · 与 AI 整理分开','AUTHOR’S VIEW · SEPARATE FROM THE SUMMARY')}</span><div class="note-body">{note_html}</div><a class="edit-note" href="{edit}" target="_blank" rel="noopener">{label(lang,'作者编辑旁注','Edit author’s note')}</a></section>
-      <section class="scratch"><details><summary>{label(lang,'我的阅读草稿','My reading scratchpad')}</summary><label for="scratchpad">{label(lang,'只保存在当前浏览器，不会公开或跨设备同步。','Saved only in this browser. Not public or synced across devices.')}</label><textarea id="scratchpad" rows="6" placeholder="{label(lang,'记下一个问题，或一个还没成形的想法…','A question, a connection, an unfinished thought…')}"></textarea><div class="scratch-actions"><span id="scratch-status" role="status"></span><button class="text-button" id="export-draft">{label(lang,'下载草稿','Export draft')}</button></div></details></section>
-      </aside></div>'''
-    return shell(lang, articles, cfg, body, a['title'][lang], a['intro'][lang], '', a['id'])
+    discussion = (f'<div class="giscus" id="giscus" data-article="{esc(a["id"])}" data-repo="{esc(cfg["repository"])}" data-repo-id="{esc(g.get("repoId", ""))}" data-category="{esc(g.get("category", "General"))}" data-category-id="{esc(g.get("categoryId", ""))}"></div>'
+                  if ready else
+                  f'<p>{label(lang,"有不同看法或补充证据？欢迎在","Have a different read or more evidence? Join the conversation on")} <a href="{discussion_link}" target="_blank" rel="noopener">GitHub Discussions</a>{label(lang," 留言。",".")}</p>')
+    idx = articles.index(a)
+    newer = articles[idx - 1] if idx > 0 else None
+    older = articles[idx + 1] if idx + 1 < len(articles) else None
+    pager = ''.join([
+        f'<a class="prev" href="{route(lang,older["id"])}"><span>{label(lang,"上一篇","Previous")}</span>{esc(older["title"][lang])}</a>' if older else '<span></span>',
+        f'<a class="next" href="{route(lang,newer["id"])}"><span>{label(lang,"下一篇","Next")}</span>{esc(newer["title"][lang])}</a>' if newer else '<span></span>'])
+    body = f'''<article class="prose">
+<p class="meta"><a href="{route(lang)}">{label(lang,'← 全部笔记','← All notes')}</a></p>
+<h1>{esc(a['title'][lang])}</h1>
+<p class="meta">{esc(topic_name(a['topic'], lang))} · {a['minutes']} {label(lang,'分钟','min read')} · {label(lang,'整理于','Noted')} {a['issue']}</p>
+<p class="lead">{esc(a['intro'][lang])}</p>
+<blockquote class="source">{label(lang,'原文','Source')}：<a href="{esc(a['url'])}" target="_blank" rel="noopener">{esc(a['original'])}</a><br><span class="muted">{esc(a['source'])} · {label(lang,'发布于','published')} {a['published']} · {label(lang,'建议先读','Start with')} {esc(a['path'][lang])}</span></blockquote>
+<h2>{label(lang,'方法与发现','Idea & evidence')}</h2>
+{''.join('<p>'+esc(p)+'</p>' for p in a['body'][lang])}
+<h2>{label(lang,'局限','Limits')}</h2>
+<p>{esc(a['limits'][lang])}</p>
+<h2>{label(lang,'我的旁注','My take')}</h2>
+{note_html}
+<p class="muted small">{label(lang,'以上「方法与发现」「局限」由 AI 辅助整理；「我的旁注」只包含我本人写下的内容。','The idea and limits sections are AI-assisted; “My take” contains only what I’ve written myself.')}</p>
+<h2>{label(lang,'讨论','Discussion')}</h2>
+{discussion}
+<nav class="pager" aria-label="{label(lang,'更多笔记','More notes')}">{pager}</nav>
+</article>'''
+    return shell(lang, cfg, body, a['title'][lang], a['intro'][lang], route(lang, a['id']), route('en' if lang == 'zh' else 'zh', a['id']), True)
 
 def about_page(lang, articles, cfg):
-    body = f'''<div class="about-page"><p class="eyebrow">ABOUT THE NOTEBOOK</p><h1>{label(lang,'你好，我是 Aimee。','Hi, I’m Aimee.')}</h1><p class="about-lead">{label(lang,'把持续阅读，变成可以分享和讨论的思考。','Turning a reading habit into ideas we can share and discuss.')}</p><div class="about-bio"><span class="mini-avatar">A<span>✳</span></span><div><h2>Aimee Gao</h2><p>Georgia Tech · M.S. 2027</p><p>AI · Engineering · Product</p></div></div>
-      <h2>{label(lang,'这里会记录什么','What lives here')}</h2><p>{label(lang,'这个笔记本关注 AI 研究与应用：从训练、推理和记忆，到多模态、安全与科学探索。每期精选保留原文链接、发布日期、主要方法、证据与局限，方便继续读下去。','This notebook follows AI research and applications: training, inference, memory, multimodal systems, safety, and science. Each reading note keeps the original source, publication date, methods, evidence, and limitations close at hand.')}</p>
-      <h2>{label(lang,'怎样区分整理与观点','Summaries and perspectives')}</h2><p>{label(lang,'正文是 AI 辅助整理的阅读摘要，不代表我已独立复现实验。右侧「Aimee 的旁注」专门留给我自己的判断、问题与连接；没有写过的地方会保持空白。欢迎在文章下方补充证据或提出不同看法。','The main text contains AI-assisted reading summaries and does not imply independent reproduction. The margin is reserved for my own judgments, questions, and connections; unwritten notes stay unwritten. Evidence and different perspectives are welcome in the discussion.')}</p>
-      <h2>{label(lang,'一起交流','Let’s connect')}</h2><div class="connect-links"><a class="button" href="{esc(cfg['linkedin'])}" target="_blank" rel="noopener">LinkedIn</a><a class="button secondary" href="{esc(cfg['github'])}" target="_blank" rel="noopener">GitHub</a><a class="text-link" href="/feed.xml">RSS</a></div><p class="about-credit">{label(lang,'原始研究与文章归各自作者所有。本站提供简短摘要与原文入口，不转载全文。','Original work belongs to its authors. This site offers short summaries and links, not full-text republication.')}</p></div>'''
-    return shell(lang, articles, cfg, body, label(lang,'关于 Aimee','About Aimee'), label(lang,'Aimee Gao 的 AI 阅读笔记与公开学习。','Aimee Gao’s AI reading notebook.'), 'about/')
+    topics = '、'.join(topic_name(t, 'zh') for t in TOPICS if any(a['topic'] == t for a in articles)) if lang == 'zh' else ', '.join(t.lower() for t in TOPICS if any(a['topic'] == t for a in articles))
+    body = f'''<article class="prose">
+<h1>{label(lang,'关于','About')}</h1>
+<p class="lead">{label(lang,'你好，我是 Aimee Gao。','Hi, I’m Aimee Gao.')}</p>
+<ul>
+<li>Georgia Tech · M.S. 2027</li>
+<li>{label(lang,'关注 AI 研究、工程与产品之间的连接','Interested in where AI research, engineering, and product meet')}</li>
+</ul>
+<h2>{label(lang,'这里写什么','What I write about')}</h2>
+<p>{label(lang,'目前覆盖：','So far: ')}{esc(topics)}{label(lang,'。','.')}</p>
+<p>{label(lang,'正文是 AI 辅助整理的阅读摘要，不代表我已独立复现实验。每篇末尾的「我的旁注」只放我自己写下的判断和问题；没写的地方就留空。','Summaries are AI-assisted and don’t imply I’ve reproduced the experiments. “My take” at the end of each note holds only my own judgments and questions; if I haven’t written one, it stays empty.')}</p>
+<h2>{label(lang,'联系','Get in touch')}</h2>
+<p><a href="{esc(cfg['linkedin'])}" target="_blank" rel="noopener">LinkedIn</a> · <a href="{esc(cfg['github'])}" target="_blank" rel="noopener">GitHub</a> · <a href="/feed.xml">RSS</a></p>
+<p class="muted small">{label(lang,'原始研究与文章归各自作者所有。本站只提供简短摘要与原文链接，不转载全文。','Original work belongs to its authors. This site offers short summaries and links, never full text.')}</p>
+</article>'''
+    return shell(lang, cfg, body, label(lang,'关于 Aimee','About Aimee'), label(lang,'Aimee Gao 的 AI 阅读笔记。','Aimee Gao’s AI reading notes.'),
+                 about_url(lang), about_url('en' if lang == 'zh' else 'zh'))
 
 def write_page(path, text):
     p = OUT / path
