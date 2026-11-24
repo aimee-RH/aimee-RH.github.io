@@ -1,0 +1,125 @@
+[
+  {
+    "id": "learning-our-own-hallucinations", "issue": "2026-11-24", "published": "2026-11-19", "source": "Cornell University", "topic": "Training", "minutes": 7,
+    "original": "LLMs Memorize Their Own Hallucinations During Post-Training", "url": "https://arxiv.org/html/2611.26863v1",
+    "title": {"zh": "模型，会把自己编造的错误学进去吗？", "en": "Can a model learn its own mistakes as facts?"},
+    "intro": {"zh": "最终答案得到了奖励，推理途中出现的错误事实，也可能一起被强化。", "en": "A reward for a correct final answer can also reinforce false claims along the way."},
+    "body": {"zh": ["研究者对六个开放模型进行后训练，提取模型在推理过程中生成的错误陈述，并追踪后续检查点对这些陈述的记忆变化。只评估最终答案的奖励，并不区分推理过程中的事实质量。", "作者报告：得到训练强化的错误，在选择题探针中被再次选中的比例平均增加 4.83 个百分点；没有得到训练信号的对照组增加 0.17 个百分点。即使模型当场撤回错误，也仍可能记住它。"], "en": ["The researchers post-trained six open models, extracted false claims from their reasoning traces, and tracked recall across later checkpoints. Outcome-based rewards do not separately assess factual accuracy within the reasoning trace.", "The authors report a 4.83 percentage-point average increase in recall of reinforced false claims in multiple-choice probes, compared with 0.17 points for an unreinforced control. Claims that a model subsequently retracts can still be memorized."]},
+    "limits": {"zh": "选择题探针的错误召回不能直接换算为自由回答中的幻觉率；事实提取和判错也部分依赖模型。", "en": "Multiple-choice recall is not a free-form hallucination rate. Fact extraction and classification also partly depend on another model."},
+    "path": {"zh": "图 1 · §2.1 · §3", "en": "Figure 1 · §2.1 · §3"}
+  },
+  {
+    "id": "memonce", "issue": "2026-11-24", "published": "2026-11-20", "source": "Nanjing University · USTC", "topic": "Memory", "minutes": 6,
+    "original": "MemOnce: A Scalable Memory Architecture for Large Language Models", "url": "https://arxiv.org/html/2611.27973v1",
+    "title": {"zh": "长期记忆，只存一份，需要时再展开。", "en": "Store memory once. Reconstruct it when needed."},
+    "intro": {"zh": "将历史压缩为可复用的内部表示，再按需还原各层需要的缓存。", "en": "Compact reusable representations replace repeated layer-wise storage of the full history."},
+    "body": {"zh": ["MemOnce 保存少量最终层内部状态作为压缩记忆。新输入到来时，模型只检索一次相关记忆，再按需解码出各层注意力需要的 KV 缓存。它学习的是内部表示，并非简单的文字摘要。", "作者在 Qwen3.5-4B、百万 token 上下文配置下，报告预填充延迟降低 6.9 倍、吞吐提高 3.5 倍。这些结果对应论文中的特定硬件和评测设置。"], "en": ["MemOnce retains a small subset of final-layer hidden states as compressed memory. It retrieves relevant representations once, then reconstructs layer-specific KV caches on demand. The memory is a learned internal representation.", "For the adapted Qwen3.5-4B at one-million-token context, the authors report 6.9× lower prefill latency and 3.5× higher throughput under their evaluation configuration."]},
+    "limits": {"zh": "从头训练只验证到 1B 规模；复杂交互式编码、多步工具任务仍待充分验证。活跃显存缓存的压缩比例也不等于全部存储开销的下降比例。", "en": "From-scratch training was tested only up to 1B parameters. Complex interactive coding and tool-use settings need more validation. Active GPU cache savings are not equivalent to total storage savings."},
+    "path": {"zh": "图 2 · §3 · §5.2", "en": "Figure 2 · §3 · §5.2"}
+  },
+  {
+    "id": "searching-for-planets", "issue": "2026-11-24", "published": "2026-11-24", "source": "OpenAI", "topic": "Science", "minutes": 5,
+    "original": "Searching for distant planets with Astra", "url": "https://openai.com/index/searching-for-distant-planets-with-astra/",
+    "title": {"zh": "从星光的一次变暗，到值得追踪的线索。", "en": "From a dip in starlight to a testable lead."},
+    "intro": {"zh": "一个 AI 辅助筛查公开天文数据的实践案例，结果仍是候选信号。", "en": "A case study in AI-assisted astronomical search, with candidate signals still awaiting confirmation."},
+    "body": {"zh": ["行星从恒星前方经过时，可能造成周期性的微弱变暗。两位业余天文爱好者使用模型查阅已有方法、编写软件，并筛查 Kepler、TESS 等公开数据。", "其中一条流程先搜索候选，再进行细查，并检出了部分已确认行星作为初步验证。SETI Institute 的研究者独立找到了两个相同信号，后续仍需观测。"], "en": ["A transiting planet can cause a faint periodic dip in a star’s brightness. Two amateur astronomers used models to review methods, build software, and search public Kepler and TESS data.", "One pipeline separated candidate screening from detailed checks and recovered some known planets. A SETI Institute astronomer independently found two of the same signals; further observations are still needed."]},
+    "limits": {"zh": "双星遮挡、仪器变化也可能造成变暗。本文是实践案例，未量化相对传统流程的发现增益，也没有确认新行星。", "en": "Binary stars and instrument effects can mimic transits. This case study does not quantify discovery gains over conventional workflows or establish newly confirmed planets."},
+    "path": {"zh": "Looking for dips in starlight · What does it take to confirm a planet?", "en": "Looking for dips in starlight · What does it take to confirm a planet?"}
+  },
+  {
+    "id": "fine-tuning-wall-clock", "issue": "2026-11-23", "published": "2026-11-18", "source": "Dharma-AI", "topic": "Infrastructure", "minutes": 6,
+    "original": "Why your fine-tuning job takes longer than the FLOPs say", "url": "https://huggingface.co/blog/Dharma-AI/predicting-fine-tuning-time",
+    "title": {"zh": "算出了计算量，为什么还估不准训练时间？", "en": "Why FLOPs alone cannot predict a training job."},
+    "intro": {"zh": "训练任务的完成时间，还包含评估、检查点和共享集群的开销。", "en": "Evaluation, checkpoints, and shared infrastructure also shape wall-clock runtime."},
+    "body": {"zh": ["团队分析 272 次 H200 集群上的监督微调任务，仅使用运行前已知配置，训练 CatBoost 预测获得 GPU 之后到任务结束的时间，不包含排队。", "五折交叉验证中，CatBoost 的平均绝对误差为 1.71 小时，测试过的最佳 FLOP 基线为 12.41 小时。评估量、保存策略和模型规模都是重要特征。"], "en": ["The team studied 272 supervised fine-tuning runs on H200s, predicting time from GPU allocation to completion using pre-dispatch configuration. Queue time is excluded.", "In five-fold cross-validation, CatBoost achieved a 1.71-hour mean absolute error versus 12.41 hours for the best tested FLOP baseline. Evaluation workload, checkpoint policy, and model size were important features."]},
+    "limits": {"zh": "数据来自一个环境、同一种 GPU；没有证明跨集群迁移效果，也未展示上线调度节省的成本。", "en": "Results come from one environment and GPU type. Cross-cluster transfer and real scheduling savings were not established."}, "path": {"zh": "What we built · Results · Limitations", "en": "What we built · Results · Limitations"}
+  },
+  {
+    "id": "flashmorph2", "issue": "2026-11-23", "published": "2026-11-18", "source": "ByteDance Seed · Fudan · NTU", "topic": "Architecture", "minutes": 6,
+    "original": "On-Policy Morphing into Hybrid Attention Models", "url": "https://arxiv.org/html/2611.24809v1",
+    "title": {"zh": "哪些注意力层，值得保留下来？", "en": "Which attention layers are worth keeping?"},
+    "intro": {"zh": "改造预训练模型时，让层选择也看到模型适应新结构后的表现。", "en": "Choose a hybrid architecture while accounting for how its weights adapt."},
+    "body": {"zh": ["混合模型在部分层保留完整注意力，其他层使用更省资源的线性注意力。FlashMorph2 在选择阶段就采样实际的离散结构，让模型使用自己产生的内部状态运行，并同时调整权重。", "作者报告，相比 FlashMorph，RULER 平均提高 2.42 分、LongBench 提高 1.08 分。核心是减少选择阶段与实际模型运行方式的差异。"], "en": ["Hybrid models retain full attention in selected layers and use linear attention elsewhere. FlashMorph2 samples discrete architectures during selection, runs on self-generated hidden states, and adapts weights jointly.", "The authors report average gains over FlashMorph of 2.42 points on RULER and 1.08 on LongBench, reducing mismatch between architecture selection and the adapted model."]},
+    "limits": {"zh": "主要质量实验集中在 0.6B 和 1.7B 的 Qwen3 模型；超大规模模型收益尚需验证。", "en": "Main quality experiments focus on Qwen3 at 0.6B and 1.7B. Benefits at much larger scales remain to be validated."}, "path": {"zh": "图 1 · §4 · §5.2", "en": "Figure 1 · §4 · §5.2"}
+  },
+  {
+    "id": "anvil-red-teaming", "issue": "2026-11-23", "published": "2026-11-12", "source": "Anthropic Safeguards", "topic": "Safety", "minutes": 6,
+    "original": "Strengthening our safeguards with frontier automated red-teaming", "url": "https://safeguards.anthropic.com/2026/automated-red-teaming/",
+    "title": {"zh": "让安全测试，持续发现新漏洞。", "en": "Safety testing that adapts as defenses change."},
+    "intro": {"zh": "固定题库检查已知漏洞，适应性测试进一步探索新的失败路径。", "en": "Static evaluations track known failures; adaptive evaluations search for new ones."},
+    "body": {"zh": ["Anvil 使用模型反复测试防护系统、记录尝试，再根据反馈调整后续测试。作者报告，在多个指定内部任务上，它比受雇的人类测试者更快发现严重漏洞。", "这份研究区分静态和适应性评估，也观察了内部测试结果与实际攻击流量中的防护表现。"], "en": ["Anvil iteratively tests safeguards, records attempts, and adapts to feedback. Anthropic reports faster discovery of serious vulnerabilities than contracted human testers on specified internal tasks.", "The study distinguishes static and adaptive evaluation and compares internal robustness measurements with observed attack traffic."]},
+    "limits": {"zh": "系统使用强模型和外部测试者没有的内部反馈；实际流量改善也伴随其他防护升级，无法全部归因于 Anvil。", "en": "The system uses strong models and privileged feedback unavailable to external testers. Other safeguard changes occurred alongside improvements in live traffic."}, "path": {"zh": "How it works · Harnessing frontier capabilities…", "en": "How it works · Harnessing frontier capabilities…"}
+  },
+  {
+    "id": "wemm-video", "issue": "2026-11-22", "published": "2026-11-19", "source": "Tencent WeChat Vision · Tsinghua", "topic": "Multimodal", "minutes": 7,
+    "original": "WeMM-Video: Pushing the Frontiers of Open-Source Omni-Modal Video Understanding", "url": "https://arxiv.org/html/2611.26409v1",
+    "title": {"zh": "把视频里的看见和听见对齐。", "en": "Aligning what a video shows with what it sounds like."},
+    "intro": {"zh": "时间戳、音视频交错排列，以及专门抑制重复输出的后训练。", "en": "Timestamps, interleaved audio-visual tokens, and post-training against repetition."},
+    "body": {"zh": ["WeMM-Video 将音频压缩为每秒 10 个 token，与画面 token 按时间交错，再加上时间戳，帮助关联视觉和声音事件。", "团队还收集重复、无休止输出的失败样本，用偏好优化抑制重复，再针对较难的音视频能力进行强化学习。"], "en": ["WeMM-Video compresses audio into ten tokens per second, interleaves them chronologically with visual tokens, and adds timestamps to align events.", "The team mines repetitive and endless outputs for preference optimization, followed by specialist reinforcement learning for harder audio-visual tasks."]},
+    "limits": {"zh": "作者报告广泛评测和业务应用，但业务收益缺少独立对照；榜单结论仍需按具体任务理解。", "en": "The authors report broad evaluations and deployment, but independent business-impact comparisons are not provided."}, "path": {"zh": "§2 · §4.2", "en": "§2 · §4.2"}
+  },
+  {
+    "id": "posterior-matching", "issue": "2026-11-22", "published": "2026-11-19", "source": "Virginia Tech · NVIDIA", "topic": "Generation", "minutes": 6,
+    "original": "Posterior Matching Distillation", "url": "https://arxiv.org/html/2611.26629v1",
+    "title": {"zh": "生成更快，也要保留更多可能。", "en": "Fewer generation steps, more possible outcomes."},
+    "intro": {"zh": "同一个噪声输入可能对应多张合理图像，蒸馏需要保留这种多样性。", "en": "One noisy input can correspond to many valid images. Distillation should preserve that diversity."},
+    "body": {"zh": ["PMD 给学生额外随机输入，让它从同一噪声状态产生不同结果，再用多种加权平均约束学习教师的条件分布。", "作者证明了理想条件下的分布识别性质，并在 SDXL 和 FLUX.2 上报告四步生成的质量与多样性收益。"], "en": ["PMD adds stochastic input to the student and matches families of reweighted means, supervising the teacher’s conditional distribution of clean images.", "The authors establish an idealized identification result and report quality and diversity benefits for four-step generation on SDXL and FLUX.2."]},
+    "limits": {"zh": "理论保证不代表实际训练已恢复完整分布；训练仍需多次学生采样和额外对抗损失。", "en": "The theoretical result does not establish full distribution recovery in practice. Training requires multiple student draws and an auxiliary adversarial loss."}, "path": {"zh": "图 1 · Introduction · Conclusion and Limitation", "en": "Figure 1 · Introduction · Conclusion and Limitation"}
+  },
+  {
+    "id": "mind2act-world", "issue": "2026-11-22", "published": "2026-11-19", "source": "Mind2Act World team", "topic": "Robotics", "minutes": 5,
+    "original": "Mind2Act World: A Diagnostic Benchmark for Embodied Mind, Physical Action, and Mind-Action Composition in Robotic Manipulation", "url": "https://arxiv.org/html/2611.26444v1",
+    "title": {"zh": "机器人会判断、会动作，能把两者接起来吗？", "en": "Can robots compose reasoning and action?"},
+    "intro": {"zh": "分别测试历史推理、精确动作，以及通过环境反馈衔接两者。", "en": "A diagnostic view of memory-based decisions, physical execution, and their composition."},
+    "body": {"zh": ["评测包含 30 个模拟操作任务、180 种配置。三组任务分别关注历史信息判断、精确执行和多阶段闭环操作。", "受测最强 Agent 在前两组的成功率为 52.7% 和 39.0%，组合任务为 12.0%。研究进一步记录失败发生在哪个阶段。"], "en": ["The benchmark includes 30 simulated tasks and 180 configurations, separating history-based reasoning, precise execution, and multi-stage closed-loop manipulation.", "The strongest evaluated agent succeeds on 52.7% of Mind and 39.0% of Act episodes, but only 12.0% of composed episodes. Diagnostics track where failures begin."]},
+    "limits": {"zh": "组合任务更长、更复杂，低分不能全部归因于衔接失败；推理期间仿真暂停，结果不等于实时机器人能力。", "en": "Composed tasks are longer and different, limiting causal attribution. Simulation pauses during inference, so these results do not establish real-time performance."}, "path": {"zh": "§3.2 · §7.1", "en": "§3.2 · §7.1"}
+  },
+  {
+    "id": "inkling-looped-transformer", "issue": "2026-11-21", "published": "2026-11-20", "source": "Hugging Face · Thinking Machines", "topic": "Architecture", "minutes": 6,
+    "original": "Welcome Inkling 2 Mini, Cutting-edge Performance for your Local Setup", "url": "https://huggingface.co/blog/inkling2mini",
+    "title": {"zh": "同一组模型层，可以反复使用。", "en": "Reusing the same layers for deeper computation."},
+    "intro": {"zh": "权重共享让模型容量与计算深度可以分别设计。", "en": "Weight sharing separates stored model capacity from computational depth."},
+    "body": {"zh": ["Inkling 2 Mini 的 24 层中，中间 12 层重复运行三次，共进行 48 次层计算。各轮共享权重，通过消息与门控传递信息。", "还有可调整循环次数的研究版本，用来探索推理计算与质量之间的取舍。"], "en": ["Inkling 2 Mini repeats its middle twelve layers three times, giving 48 layer applications from 24 physical layers. Passes share weights and exchange gated messages.", "A variable-loop research checkpoint explores the tradeoff between inference computation and output quality."]},
+    "limits": {"zh": "重复计算仍需要时间，各轮也保留自己的缓存；可变循环版本尚未充分评估。", "en": "Repeated computation still costs time and maintains pass-specific caches. The variable-loop checkpoint has not been deeply evaluated."}, "path": {"zh": "What is new with Inkling 2 Mini?", "en": "What is new with Inkling 2 Mini?"}
+  },
+  {
+    "id": "harness-adapters", "issue": "2026-11-21", "published": "2026-11-20", "source": "Hugging Face", "topic": "Training", "minutes": 7,
+    "original": "Introducing harness adapters: adapt your favorite model to your harness to improve performance and cost", "url": "https://huggingface.co/blog/harness-adapters-at-scale",
+    "title": {"zh": "让模型在实际工具环境里接受训练。", "en": "Training inside the agent’s actual harness."},
+    "intro": {"zh": "冻结模型主体，在实际执行环境中训练小型强化学习适配器。", "en": "Small RL-trained adapters learn within the real execution environment."},
+    "body": {"zh": ["团队在 Pi、OpenCode、Hermes 三种工具环境中，分别为 Qwen3.8-27B 训练 LoRA。训练直接使用实际环境产生的行为轨迹。", "在 Pi 环境的 SWE-bench Pro 最难 51 题上，作者报告成功率从 39.2% 提高到 64.7%，共同完成的任务也减少了工具调用。"], "en": ["The team trained Qwen3.8-27B LoRA adapters inside Pi, OpenCode, and Hermes, learning from trajectories produced by the real harnesses.", "On the hard 51-task SWE-bench Pro subset under Pi, the authors report a success-rate increase from 39.2% to 64.7%, with fewer calls on jointly solved tasks."]},
+    "limits": {"zh": "收益未清晰迁移到商业自动化任务；关闭思考模式后仍出现类似推理的普通输出，机制有待研究。", "en": "Gains did not clearly transfer to business automation. Reasoning-like text also emerged in non-thinking outputs, leaving the mechanism open."}, "path": {"zh": "Training inside agent harnesses · Evaluation results · Open question", "en": "Training inside agent harnesses · Evaluation results · Open question"}
+  },
+  {
+    "id": "alphagenome-cell-states", "issue": "2026-11-21", "published": "2026-11-11", "source": "Google DeepMind", "topic": "Science", "minutes": 5,
+    "original": "AlphaGenome 2: Deciphering how cells read DNA to better understand disease", "url": "https://deepmind.google/blog/alphagenome-2-deciphering-how-cells-read-dna-to-better-understand-disease/",
+    "title": {"zh": "同一段 DNA，在不同细胞中如何表达？", "en": "How the same DNA behaves in different cells."},
+    "intro": {"zh": "以细胞类型和状态为条件，预测特定环境中的变异作用。", "en": "Conditioning on cell type and state to predict variant effects."},
+    "body": {"zh": ["AlphaGenome 2 把细胞类型或状态与 DNA 一起作为输入，并能将新实验中的基因活动压缩成状态表示，预测未测量的属性。", "作者报告，在特定免疫细胞数据集上，因果变异识别比例从 16% 提高到 30%。研究关注被组织平均值掩盖的细胞特异效应。"], "en": ["AlphaGenome 2 conditions on both DNA and cell state. It can encode gene activity from new single-cell experiments and predict unmeasured properties.", "On a specific immune-cell dataset, the authors report variant identification rising from 16% to 30%, targeting effects that tissue-level averages can obscure."]},
+    "limits": {"zh": "这些是研究评测结果；模型尚未获得临床诊断验证。", "en": "These are research results; the model has not been clinically validated for diagnosis."}, "path": {"zh": "Redesigning AlphaGenome… · Analyzing new cell types…", "en": "Redesigning AlphaGenome… · Analyzing new cell types…"}
+  },
+  {
+    "id": "turingspace", "issue": "2026-11-20", "published": "2026-11-19", "source": "Meta · University collaborators", "topic": "Evaluation", "minutes": 7,
+    "original": "TuringSpace: Grounding Spatial Intelligence in Action with Interactive CAPTCHAs", "url": "https://arxiv.org/html/2611.25387v1",
+    "title": {"zh": "模型看错了，多想一会儿能纠正吗？", "en": "Can more reasoning repair a visual mistake?"},
+    "intro": {"zh": "交互式空间任务检查观察、行动和纠正的完整过程。", "en": "Interactive spatial tasks test the whole observe–act–correct loop."},
+    "body": {"zh": ["TuringSpace 提供 125 类合成空间任务，要求模型点击、拖动并观察结果。作者报告人类成功率为 94.1%，受测最强模型为 74.1%。", "最强三个模型的失败案例中，57.1% 被归因为感知错误。其他模型的分析还发现，长推理有时会编造画面细节来维护早先的错误判断。"], "en": ["TuringSpace contains 125 synthetic spatial task types requiring clicks, drags, and observation of results. Reported human success is 94.1%, versus 74.1% for the strongest tested model.", "Perception accounts for 57.1% of analyzed failures in the top three models. Separate trace analysis finds that extended reasoning can defend early mistaken beliefs."]},
+    "limits": {"zh": "任务是合成网页，失败分析部分依赖模型标注；真实物理操作仍需独立验证。", "en": "Tasks are synthetic web environments, and failure labels partly use model judgments. Real physical manipulation requires separate validation."}, "path": {"zh": "§4.2 · §5.2–5.3", "en": "§4.2 · §5.2–5.3"}
+  },
+  {
+    "id": "model-ingredients", "issue": "2026-11-20", "published": "2026-11-18", "source": "JPMorgan Chase LLM Suite", "topic": "Training", "minutes": 6,
+    "original": "Do Frontier Model Ingredients Add Up? A Replicated Factorial Study of Small Language Models", "url": "https://arxiv.org/html/2611.24540v1",
+    "title": {"zh": "模型的技术配方，收益能相加吗？", "en": "Do model improvements add up?"},
+    "intro": {"zh": "同时测试组件组合，并用重复训练检查结果是否稳定。", "en": "Test components together and repeat runs before choosing a recipe."},
+    "body": {"zh": ["研究在约 5150 万活跃参数的模型上测试五项技术改动，选择 16 种组合，每种用两个随机种子重复训练。", "专家混合、Muon 和 Gated DeltaNet 混合结构带来的损失下降最大。多数收益可以叠加，但组件间存在相互影响，单独有效的组件在组合中可能收益很小。"], "en": ["The study tests five changes on a model with roughly 51.5M active parameters, using sixteen selected combinations and two random seeds each.", "MoE, Muon, and a Gated DeltaNet hybrid give the largest loss reductions. Gains mostly combine, but interactions mean a useful standalone component may add little in a recipe."]},
+    "limits": {"zh": "规模和预算较小，专家模型拥有更多总参数；不能直接当作大模型架构排名。", "en": "The setting is small and expert models have more total capacity. The results do not establish a universal large-model ranking."}, "path": {"zh": "Introduction · 表 2 · Limitations", "en": "Introduction · Table 2 · Limitations"}
+  },
+  {
+    "id": "atto-embeddings", "issue": "2026-11-20", "published": "2026-11-19", "source": "NeuML · David Mezzetti", "topic": "Retrieval", "minutes": 5,
+    "original": "Atto: Rethinking Compact Embedding Models", "url": "https://huggingface.co/blog/NeuML/introducing-atto",
+    "title": {"zh": "检索模型很小，整个系统也会更小吗？", "en": "A smaller embedding model, a larger index?"},
+    "intro": {"zh": "缩小词表和模型，也要看输出向量与索引的成本。", "en": "Model weights, output vectors, and index cost need separate accounting."},
+    "body": {"zh": ["Atto 通过缩小词表、精简上下文处理，再输出较宽的向量，探索极小检索模型的能力。", "作者在三个 BEIR 数据集上报告：90K 参数版本的平均 nDCG@10 为 0.4257，23M 参数 MiniLM 为 0.4802。这个指标衡量排序质量，并非准确率。"], "en": ["Atto combines a smaller vocabulary and compact contextual processing with wider output embeddings to explore very small retrieval models.", "On three BEIR datasets, the author reports mean nDCG@10 of 0.4257 for a 90K-parameter variant versus 0.4802 for 23M-parameter MiniLM. This is ranking quality, not accuracy."]},
+    "limits": {"zh": "90K 版本输出 2048 维向量，高于 MiniLM 的 384 维；更小权重不代表更小索引。跨语言和更多领域仍需验证。", "en": "The 90K variant outputs 2048 dimensions versus MiniLM’s 384. Smaller weights need not mean a smaller index; broader domain and language tests remain open."}, "path": {"zh": "Dense Embeddings · 结构设计部分", "en": "Dense Embeddings · architecture sections"}
+  }
+]
