@@ -59,4 +59,19 @@ class PublicationTests(unittest.TestCase):
     def test_user_text_is_escaped(self):
         self.assertEqual(build.esc('<script>'), '&lt;script&gt;')
 
+    def test_editor_is_isolated_and_article_links_select_the_note(self):
+        for lang, prefix in [('zh', ''), ('en', '/en')]:
+            editor = (ROOT / '_site' / (prefix.lstrip('/') + '/' if prefix else '') / 'editor/index.html').read_text()
+            self.assertIn('Content-Security-Policy', editor)
+            self.assertIn('noindex,nofollow', editor)
+            self.assertIn('/assets/note-editor.mjs', editor)
+            self.assertNotIn('/assets/app.js', editor)
+            self.assertNotIn('giscus.app', editor)
+            self.assertIn('type="password"', editor)
+            for article in build.load_articles():
+                page = (ROOT / '_site' / build.route(lang, article['id']).lstrip('/') / 'index.html').read_text()
+                self.assertIn(f'{prefix}/editor/?article={article["id"]}', page)
+        index = json.loads((ROOT / '_site/editor/articles.json').read_text())
+        self.assertEqual({a['id'] for a in index}, {a['id'] for a in build.load_articles()})
+
 if __name__ == '__main__': unittest.main()

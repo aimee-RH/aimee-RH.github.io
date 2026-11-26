@@ -144,6 +144,7 @@ def article_page(lang, a, articles, cfg):
 <p>{esc(a['limits'][lang])}</p>
 <h2>{label(lang,'我的旁注','My take')}</h2>
 {note_html}
+<p class="small"><a href="{'/en' if lang == 'en' else ''}/editor/?article={a['id']}" target="_blank" rel="noopener noreferrer">{label(lang,'编辑旁注（作者）','Edit note (author)')}</a></p>
 <p class="muted small">{label(lang,'以上「方法与发现」「局限」由 AI 辅助整理；「我的旁注」只包含我本人写下的内容。','The idea and limits sections are AI-assisted; “My take” contains only what I’ve written myself.')}</p>
 <h2>{label(lang,'讨论','Discussion')}</h2>
 {discussion}
@@ -175,6 +176,57 @@ def write_page(path, text):
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(text, encoding='utf-8')
 
+def editor_page(lang, cfg):
+    token_url = ('https://github.com/settings/personal-access-tokens/new?name=AI%20Fieldnotes'
+                 '&description=Edit%20author%20notes&target_name=' + quote(cfg['repository'].split('/')[0]) +
+                 '&expires_in=30&contents=write')
+    body = f'''<article class="prose author-editor" data-repository="{esc(cfg['repository'])}" data-owner-id="{cfg['editor']['ownerId']}">
+<h1>{label(lang,'写下我的旁注','Write my take')}</h1>
+<p>{label(lang,'在这里编辑中文和英文旁注。点击保存后会公开发布；阅读摘要不受影响。','Edit Chinese and English notes here. Saving publishes them publicly; the reading summary is kept separately.')}</p>
+<noscript>{label(lang,'请启用 JavaScript 使用在线编辑器。','Enable JavaScript to use this editor.')}</noscript>
+<label for="article-picker">{label(lang,'文章','Article')}</label>
+<select id="article-picker" disabled><option>{label(lang,'正在加载文章…','Loading articles…')}</option></select>
+<p><a id="read-article" href="{route(lang)}" target="_blank" rel="noopener noreferrer">{label(lang,'打开阅读页','Open reading page')}</a></p>
+<details id="connection" open>
+<summary>{label(lang,'连接我的 GitHub','Connect my GitHub')}</summary>
+<p>{label(lang,'只允许 Aimee 的账号保存。首次使用，按下面三步生成一张博客通行证（GitHub fine-grained token）。','Only Aimee’s account can save. On first use, create a fine-grained GitHub token in three steps.')}</p>
+<ol>
+<li><a href="{esc(token_url)}" target="_blank" rel="noopener noreferrer">{label(lang,'在 GitHub 生成通行证','Create a token on GitHub')}</a>{label(lang,'，账号选择 aimee-RH。',' with the aimee-RH account.')}</li>
+<li>{label(lang,'Repository access 选择 Only select repositories，仅勾选 aimee-RH.github.io。','Under Repository access, choose Only select repositories and select aimee-RH.github.io only.')}</li>
+<li>{label(lang,'确认 Contents 为 Read and write，生成后复制到下方。','Confirm Contents is Read and write, generate the token, and paste it below.')}</li>
+</ol>
+<p class="muted small">{label(lang,'它授权读写所选仓库；此编辑器只写旁注文件。通行证仅发给 GitHub，保留在当前标签页内存中。文字草稿另存于本浏览器，不会自动公开。','The token grants read/write access to the selected repository; this editor writes only note files. It is sent only to GitHub and kept in this tab’s memory. Text drafts are stored separately in this browser and are not published automatically.')}</p>
+<form id="connect-form">
+<label for="github-token">{label(lang,'GitHub 通行证','GitHub token')}</label>
+<input id="github-token" type="password" autocomplete="off" spellcheck="false" maxlength="300" placeholder="github_pat_…" required>
+<button type="submit">{label(lang,'连接并开始编辑','Connect and edit')}</button>
+</form></details>
+<p id="identity" class="muted" hidden></p>
+<button id="disconnect" type="button" hidden>{label(lang,'断开连接','Disconnect')}</button>
+<p id="editor-status" role="status" aria-live="polite"></p>
+<form id="note-form">
+<fieldset id="note-fields" disabled>
+<legend>{label(lang,'我的旁注','My take')}</legend>
+<label for="note-zh">中文</label><textarea id="note-zh" lang="zh-CN" maxlength="20000" rows="9"></textarea>
+<label for="note-en">English</label><textarea id="note-en" lang="en" maxlength="20000" rows="9"></textarea>
+<div class="editor-actions">
+<button type="submit">{label(lang,'保存并公开发布','Save and publish')}</button>
+<button id="reload-note" type="button">{label(lang,'载入 GitHub 最新版本','Load latest from GitHub')}</button>
+</div></fieldset></form>
+<button id="export-draft" type="button" disabled>{label(lang,'下载文字草稿','Download text draft')}</button>
+<p id="draft-status" class="muted small" role="status"></p>
+<p><a id="publish-status" href="https://github.com/{esc(cfg['repository'])}/actions/workflows/pages.yml" target="_blank" rel="noopener noreferrer" hidden>{label(lang,'查看网站发布进度','Check publication progress')}</a></p>
+<h2>{label(lang,'旁注预览','Note preview')}</h2><div id="note-preview" class="note-preview"></div>
+</article>'''
+    base = '/en/' if lang == 'en' else '/'
+    page = shell(lang, cfg, body, label(lang,'编辑旁注','Edit author note'),
+                 label(lang,'作者专用的在线旁注编辑器。','Online author-note editor.'),
+                 base + 'editor/', ('/' if lang == 'en' else '/en/') + 'editor/')
+    # Keep credentials away from third-party scripts and prevent form navigation.
+    policy = "default-src 'self'; script-src 'self'; connect-src 'self' https://api.github.com; style-src 'self'; img-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'"
+    return page.replace('<head>', '<head>\n<meta name="robots" content="noindex,nofollow">\n<meta name="referrer" content="no-referrer">\n<meta http-equiv="Content-Security-Policy" content="' + policy + '">', 1).replace(
+        '<script src="/assets/app.js" defer></script>', '<script type="module" src="/assets/note-editor.mjs"></script>')
+
 def build():
     cfg = json.loads((ROOT / 'site.json').read_text())
     articles = load_articles()
@@ -183,11 +235,13 @@ def build():
     for p in OUT.iterdir():
         shutil.rmtree(p) if p.is_dir() else p.unlink()
     shutil.copytree(ROOT / 'assets', OUT / 'assets')
+    write_page('editor/articles.json', json.dumps([{'id': a['id'], 'title': a['title']} for a in articles], ensure_ascii=False))
     paths = []
     for lang in ('zh', 'en'):
         base = 'en/' if lang == 'en' else ''
         write_page(base + 'index.html', home_page(lang, articles, cfg)); paths.append('/' + base)
         write_page(base + 'about/index.html', about_page(lang, articles, cfg)); paths.append('/' + base + 'about/')
+        write_page(base + 'editor/index.html', editor_page(lang, cfg))
         for a in articles:
             dest = base + 'read/' + a['id'] + '/index.html'
             write_page(dest, article_page(lang, a, articles, cfg)); paths.append('/' + base + 'read/' + a['id'] + '/')

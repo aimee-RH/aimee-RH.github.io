@@ -34,13 +34,27 @@ Run the tests and commit to `main`. GitHub Actions builds and deploys automatica
 
 ## Add your own margin notes
 
-Edit `content/notes/<article-id>.json`. It appears under “My take / 我的旁注” on the note page:
+Click **Edit note (author)** on an article to open `/editor/?article=<id>` (or `/en/editor/`). The editor supports Chinese and English notes, a plain-text preview, browser-local text drafts, downloads, and switching between all articles without reconnecting.
+
+### Connect once per editor tab
+
+1. Follow the editor’s token-creation link while signed in to `aimee-RH`.
+2. Choose **Only select repositories → aimee-RH.github.io** and **Contents → Read and write**. The link pre-fills the owner, permission, and a 30-day expiration; repository selection must be done manually on GitHub.
+3. Paste the fine-grained token into the editor and connect. Do not paste it into chat or commit it. The token has repository-wide Contents permissions; the editor itself limits writes to `content/notes/<id>.json`. See [GitHub’s token guide](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).
+
+This is a token-based connection, not an OAuth login. No authentication service is required. Credentials go only to `api.github.com`, stay in the editor tab’s memory, and are cleared on disconnect or page exit; they are never saved in localStorage, URLs, logs, or source files. Keep the same editor tab open to edit several articles. It loads no third-party scripts and uses a restrictive content-security policy. Text drafts, including both languages and their original base versions, are stored only in this browser until explicitly published.
+
+The editor checks the authenticated numeric GitHub user ID against `site.json` and requires the configured repository’s owner and push permission. GitHub enforces the token’s actual write permissions. It reads the latest file before saving, merges changes to different languages, preserves unrelated JSON fields, and stops on competing same-language edits or a changed file SHA. Conflicts and network failures retain the draft. **Save and publish** creates a GitHub commit that triggers the Pages workflow; a confirmed commit is distinguished from a completed deployment, with a publication-status link shown after saving.
+
+You can also edit `content/notes/<article-id>.json` on GitHub. It appears under “My take / 我的旁注” on the note page:
 
 ```json
 {"zh": "你的中文观点。\n\n另一个段落。", "en": "Your English reflection.\n\nAnother paragraph."}
 ```
 
 Commit to publish. Empty fields deliberately show that no personal note has been written. They are never filled with AI-generated opinions presented as yours. Never put private material in this public repository.
+
+Editor tests: `node --test tests/note-store.test.mjs`. Publication tests also verify both editor languages, article selection links, and isolation from comment scripts.
 
 ## Comments with giscus
 

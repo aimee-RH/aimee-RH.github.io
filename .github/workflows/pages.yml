@@ -17,7 +17,10 @@ jobs:
         with:
           python-version: '3.12'
       - name: Validate content and build
-        run: python -m unittest discover -s tests -v
+        run: |
+          python -m unittest discover -s tests -v
+          node --test tests/note-store.test.mjs
+          node --check assets/note-editor.mjs
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

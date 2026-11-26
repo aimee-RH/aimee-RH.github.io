@@ -34,4 +34,16 @@ td.muted a{color:var(--muted)}
 .pager a{max-width:48%}.pager .next{text-align:right;margin-left:auto}
 .pager span{display:block;font-size:12px;color:var(--muted)}
 .site-footer{padding-top:20px;padding-bottom:32px;border-top:1px solid var(--line);font-size:13px;color:var(--muted);max-width:808px}
+.author-editor label{display:block;font-weight:600;margin:18px 0 6px}
+.author-editor select,.author-editor input,.author-editor textarea{width:100%;font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:10px}
+.author-editor textarea{resize:vertical;line-height:1.7}
+.author-editor button{font:inherit;background:var(--primary);color:var(--h2-text);border:1px solid var(--primary);border-radius:5px;padding:8px 14px;cursor:pointer;margin:10px 0}
+.author-editor button:disabled{opacity:.55;cursor:wait}
+.author-editor fieldset{border:0;padding:0;margin:24px 0 0;min-width:0}
+.author-editor legend{font-weight:600}.author-editor details{padding:16px;background:var(--block);border:1px solid var(--line);border-radius:5px}
+.author-editor summary{cursor:pointer;font-weight:600}.author-editor details[open] summary{margin-bottom:14px}
+.editor-actions{display:flex;flex-wrap:wrap;gap:10px}
+.author-editor :focus-visible{outline:2px solid var(--primary);outline-offset:3px}
+.author-editor [role=status]:not(:empty){padding:12px;background:var(--block);border-left:3px solid var(--primary)}
+.note-preview{white-space:pre-wrap;overflow-wrap:anywhere}
 @media (max-width:640px){.prose h1{font-size:26px}.site-header{flex-wrap:wrap}.site-header nav{gap:14px}th:nth-child(n+3),td:nth-child(n+3){display:none}td.topic{white-space:normal;width:5.5em}}
