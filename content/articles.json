@@ -121,5 +121,2521 @@
     "intro": {"zh": "缩小词表和模型，也要看输出向量与索引的成本。", "en": "Model weights, output vectors, and index cost need separate accounting."},
     "body": {"zh": ["Atto 通过缩小词表、精简上下文处理，再输出较宽的向量，探索极小检索模型的能力。", "作者在三个 BEIR 数据集上报告：90K 参数版本的平均 nDCG@10 为 0.4257，23M 参数 MiniLM 为 0.4802。这个指标衡量排序质量，并非准确率。"], "en": ["Atto combines a smaller vocabulary and compact contextual processing with wider output embeddings to explore very small retrieval models.", "On three BEIR datasets, the author reports mean nDCG@10 of 0.4257 for a 90K-parameter variant versus 0.4802 for 23M-parameter MiniLM. This is ranking quality, not accuracy."]},
     "limits": {"zh": "90K 版本输出 2048 维向量，高于 MiniLM 的 384 维；更小权重不代表更小索引。跨语言和更多领域仍需验证。", "en": "The 90K variant outputs 2048 dimensions versus MiniLM’s 384. Smaller weights need not mean a smaller index; broader domain and language tests remain open."}, "path": {"zh": "Dense Embeddings · 结构设计部分", "en": "Dense Embeddings · architecture sections"}
+  },
+  {
+    "id": "fastframes",
+    "issue": "2026-11-19",
+    "published": "2026-11-17",
+    "source": "Apple · Cornell University",
+    "topic": "Generation",
+    "minutes": 7,
+    "original": "FastFrames: Video Generation at Interactive Latency",
+    "url": "https://arxiv.org/html/2611.23226v1",
+    "title": {
+      "zh": "视频生成的速度，怎样才能变成交互体验？",
+      "en": "FastFrames: Video Generation at Interactive Latency"
+    },
+    "intro": {
+      "zh": "每秒生成 30 帧，仍可能需要先等一秒才看到整段画面。",
+      "en": "FastFrames replaces pixel decoding and history-cache updates with lightweight networks, targeting the delay between an input and the first responsive frame."
+    },
+    "body": {
+      "zh": [
+        "每秒生成 30 帧，仍可能需要先等一秒才看到整段画面。FastFrames 关注用户输入之后，多久能看到反映这次输入的新画面。研究者发现，像素解码和历史信息缓存更新占了大量时间，于是分别训练轻量网络替代这两个步骤。作者报告，13 亿参数版本在单张 B200 上，480p 稳态响应延迟为 36 毫秒，VBench 质量接近延迟为 272 毫秒的对照模型。这提供了一种理解生成模型性能的角度——整个输出链路中的等待都影响体验。升到 720p 后，同一版本延迟增至 127 毫秒，解码器也需要针对每个模型微调。"
+      ],
+      "en": [
+        "FastFrames replaces pixel decoding and history-cache updates with lightweight networks, targeting the delay between an input and the first responsive frame. The authors report 36 ms steady-state response latency at 480p on one B200 for a 1.3B model, compared with 272 ms for their baseline at similar VBench quality."
+      ]
+    },
+    "limits": {
+      "zh": "720p 延迟升至 127 毫秒；解码器需要针对具体模型微调。",
+      "en": "Latency rises to 127 ms at 720p, and the decoder requires model-specific fine-tuning."
+    },
+    "path": {
+      "zh": "Figure 2 · §3.2 · Appendix A",
+      "en": "Figure 2 · §3.2 · Appendix A"
+    }
+  },
+  {
+    "id": "rumble-2-flash",
+    "issue": "2026-11-19",
+    "published": "2026-11-18",
+    "source": "Reson8",
+    "topic": "Multimodal",
+    "minutes": 5,
+    "original": "Rumble-2-Flash: an open 0.5B speech model for 40+ languages",
+    "url": "https://huggingface.co/blog/rumble-2-flash",
+    "title": {
+      "zh": "五亿参数的语音模型，怎样向大模型学习？",
+      "en": "Rumble-2-Flash: an open 0.5B speech model for 40+ languages"
+    },
+    "intro": {
+      "zh": "Rumble-2-Flash 让小模型先自己转录音频，再由大模型沿着这份输出提供逐词概率反馈。",
+      "en": "Rumble-2-Flash is a 0.5B speech model trained on its own transcription trajectories with token-level feedback from a larger teacher."
+    },
+    "body": {
+      "zh": [
+        "Rumble-2-Flash 让小模型先自己转录音频，再由大模型沿着这份输出提供逐词概率反馈。一个技术难点是，两个模型切分文字的方式不同。团队使用 GOLD 对齐对应的文本片段，让不同词表的模型也能传递训练信号。在 302 小时、涵盖 14 种英语口音的客服通话测试上，作者报告词错率为 7.86%，接近其对照的 300 亿参数模型的 7.78%。文章还展示了九种语言上的平均成绩，但尚不能据此判断全部 40 多种支持语言的效果。"
+      ],
+      "en": [
+        "Rumble-2-Flash is a 0.5B speech model trained on its own transcription trajectories with token-level feedback from a larger teacher. GOLD aligns text spans across different vocabularies. The authors report 7.86% word error rate on 302 hours of customer calls spanning fourteen English accents, close to the 30B comparison model’s 7.78%."
+      ]
+    },
+    "limits": {
+      "zh": "九种语言的平均评测不足以代表全部四十多种支持语言。",
+      "en": "The reported nine-language average does not establish performance across all forty-plus supported languages."
+    },
+    "path": {
+      "zh": "How it’s built · Real phone calls",
+      "en": "How it’s built · Real phone calls"
+    }
+  },
+  {
+    "id": "daisyrose-27b",
+    "issue": "2026-11-19",
+    "published": "2026-11-18",
+    "source": "RadixArk",
+    "topic": "Training",
+    "minutes": 6,
+    "original": "DaisyRose-27B: Pushing the Frontier of Post-Training Efficiency",
+    "url": "https://huggingface.co/blog/RadixArk/daisyrose-27b-pushing-the-frontier-of-post-trainin",
+    "title": {
+      "zh": "只有 1,200 个任务，能教会 Agent 什么？",
+      "en": "DaisyRose-27B: Pushing the Frontier of Post-Training Efficiency"
+    },
+    "intro": {
+      "zh": "DaisyRose-27B 从 Qwen3.8-27B 出发，把训练任务设计在原模型容易犯错的地方。",
+      "en": "DaisyRose-27B uses 1,200 multi-step tasks selected around the base model’s weaknesses, with task inspection to remove reward loopholes."
+    },
+    "body": {
+      "zh": [
+        "DaisyRose-27B 从 Qwen3.8-27B 出发，把训练任务设计在原模型容易犯错的地方。每个任务需要多步操作，团队检查模型的尝试，修复能靠漏洞拿分的题目。训练采用异步系统，128 张 H200 负责执行任务、收集经验，另 16 张负责更新模型，长任务运行期间学习持续进行。作者报告，Terminal-Bench 4.1 的单次尝试成功率从 5.6% 升到 12.0%。它展示了任务设计、执行环境和训练系统怎样共同影响学习。公布的表格逐项选取 BF16、FP8 两次运行中较高的成绩，也缺少多次独立训练的误差范围。"
+      ],
+      "en": [
+        "DaisyRose-27B uses 1,200 multi-step tasks selected around the base model’s weaknesses, with task inspection to remove reward loopholes. An asynchronous system separates experience collection on 128 H200s from learning on sixteen. The authors report Terminal-Bench 4.1 single-attempt success increasing from 5.6% to 12.0%."
+      ]
+    },
+    "limits": {
+      "zh": "表格逐项取两种精度运行的较高值，且缺少独立训练的误差范围。",
+      "en": "Tables select the better BF16 or FP8 result per benchmark and do not report uncertainty across independent training runs."
+    },
+    "path": {
+      "zh": "High-quality training data · Efficient training backend",
+      "en": "High-quality training data · Efficient training backend"
+    }
+  },
+  {
+    "id": "heat-pump-rl",
+    "issue": "2026-11-18",
+    "published": "2026-11-17",
+    "source": "University of Granada · Georg Fischer Building Flow Solutions",
+    "topic": "Science",
+    "minutes": 7,
+    "original": "Deep Reinforcement Learning for Heat Pump and Underfloor Heating Control: An End-to-End Case Study",
+    "url": "https://arxiv.org/html/2611.23063v1",
+    "title": {
+      "zh": "在模拟器里学会供暖，搬进真实住宅会怎样？",
+      "en": "Deep Reinforcement Learning for Heat Pump and Underfloor Heating Control: An End-to-End Case Study"
+    },
+    "intro": {
+      "zh": "地暖的温度变化很慢，控制器调完阀门，房间要过一段时间才会有反应。",
+      "en": "Researchers trained a reinforcement-learning controller in EnergyPlus to adjust heat-pump supply temperature and thirteen underfloor-heating zones, then deployed it in an occupied Madrid home."
+    },
+    "body": {
+      "zh": [
+        "地暖的温度变化很慢，控制器调完阀门，房间要过一段时间才会有反应。研究者用 EnergyPlus 模拟一栋马德里住宅，让强化学习控制器练习同时调节热泵供水温度和 13 个区域的地暖阀门，再直接部署到有人居住的房子里。约两周的试验中，供水温度集中在 34°C 左右。现场还出现了模拟难以复现的情况：向阳房间关掉阀门后，室温仍会因日照上升。试验避开了最冷月份，也缺少同条件的传统控制器对照，因此实际能省多少电仍待测量。"
+      ],
+      "en": [
+        "Researchers trained a reinforcement-learning controller in EnergyPlus to adjust heat-pump supply temperature and thirteen underfloor-heating zones, then deployed it in an occupied Madrid home. During approximately two weeks, supply temperature clustered near 34°C. Sunlight still warmed some rooms after their valves were closed, illustrating the simulation-to-reality gap."
+      ]
+    },
+    "limits": {
+      "zh": "试验避开最冷月份，缺少同条件传统控制器对照，尚不能量化节电收益。",
+      "en": "The trial avoided the coldest months and lacked a matched conventional-controller baseline, so energy savings remain unquantified."
+    },
+    "path": {
+      "zh": "Figure 8 · §5.2 · §6.2",
+      "en": "Figure 8 · §5.2 · §6.2"
+    }
+  },
+  {
+    "id": "gauntletscore",
+    "issue": "2026-11-18",
+    "published": "2026-11-17",
+    "source": "Genstrata",
+    "topic": "Evaluation",
+    "minutes": 5,
+    "original": "GauntletScore: Auditable Fact-Checking That Matches the Best Published Checkers on LLM-AggreFact",
+    "url": "https://arxiv.org/html/2611.22027v1",
+    "title": {
+      "zh": "核查 AI 生成的句子，怎样留下可复查的证据？",
+      "en": "GauntletScore: Auditable Fact-Checking That Matches the Best Published Checkers on LLM-AggreFact"
+    },
+    "intro": {
+      "zh": "GauntletScore 把一句声明拆成多个可核查的问题，交由不同模型判断，保存每项判断的来源和置信程度。",
+      "en": "GauntletScore decomposes a claim into checkable questions, uses multiple model judgments, and retains evidence and confidence for review."
+    },
+    "body": {
+      "zh": [
+        "GauntletScore 把一句声明拆成多个可核查的问题，交由不同模型判断，保存每项判断的来源和置信程度。系统只有在两个模型都发现矛盾时才把它计入反证。作者在 29,320 条声明上测得 79.51% 的平衡准确率，与当时榜首的 79.45% 接近。这个设计最值得看的地方是，复核者能追溯某项判断从哪来。代价是约八成声明仍要调用第三个模型。实验只检查给定原文是否支持声明，所用模型的身份和提示词也未公开。"
+      ],
+      "en": [
+        "GauntletScore decomposes a claim into checkable questions, uses multiple model judgments, and retains evidence and confidence for review. A contradiction counts as counterevidence only when two models agree. The authors report 79.51% balanced accuracy on 29,320 claims, close to the cited leader’s 79.45%."
+      ]
+    },
+    "limits": {
+      "zh": "约八成声明仍需第三个模型；只测原文支持度，模型身份和提示词未公开。",
+      "en": "About eighty percent of claims still require a third model. Evaluation measures support from a supplied text; model identities and prompts were not disclosed."
+    },
+    "path": {
+      "zh": "Figure 1 · Table 3 · §7",
+      "en": "Figure 1 · Table 3 · §7"
+    }
+  },
+  {
+    "id": "xing4-training",
+    "issue": "2026-11-18",
+    "published": "2026-11-17",
+    "source": "China Telecom TeleAI",
+    "topic": "Infrastructure",
+    "minutes": 6,
+    "original": "TeleChat to Xing4: Advancing Frontier Agentic Models on Domestic Chips and Frameworks",
+    "url": "https://arxiv.org/html/2611.22115v1",
+    "title": {
+      "zh": "大模型训练时，怎样让芯片少等彼此？",
+      "en": "TeleChat to Xing4: Advancing Frontier Agentic Models on Domestic Chips and Frameworks"
+    },
+    "intro": {
+      "zh": "Xing 4 报告展示了硬件互联怎样影响训练方案。",
+      "en": "Xing4’s report explains how hardware topology shapes distributed training: frequent weight exchange stays within fast-connected Ascend groups, while aggregated gradients cross groups and communication overlaps backward computation."
+    },
+    "body": {
+      "zh": [
+        "Xing 4 报告展示了硬件互联怎样影响训练方案。团队在高速互联的昇腾设备组内分摊模型权重，把更频繁的权重交换留在组内，跨组只同步合并后的梯度，同时让通信和反向计算尽量重叠。在 1,024 张加速卡的对照测试中，2850 亿参数模型的单步训练时间从 36.4 秒降到 31.8 秒。报告另记载了用 8,192 张昇腾 910C 卡做的预训练。前面的加速数字来自较小的测试集群，实际收益取决于网络拓扑和训练配置。"
+      ],
+      "en": [
+        "Xing4’s report explains how hardware topology shapes distributed training: frequent weight exchange stays within fast-connected Ascend groups, while aggregated gradients cross groups and communication overlaps backward computation. For a 285B model on 1,024 accelerators, the authors report step time falling from 36.4 to 31.8 seconds. Pretraining on 8,192 Ascend 910Cs is reported separately."
+      ]
+    },
+    "limits": {
+      "zh": "加速数字来自较小测试集群，不能直接外推至完整预训练集群。",
+      "en": "The speed comparison comes from a smaller test cluster and cannot be directly extrapolated to the full pretraining system."
+    },
+    "path": {
+      "zh": "§3.1 · Figure 4 · Table 7",
+      "en": "§3.1 · Figure 4 · Table 7"
+    }
+  },
+  {
+    "id": "learning-from-distribution",
+    "issue": "2026-11-17",
+    "published": "2026-11-16",
+    "source": "Nankai University · China Telecom TeleAI",
+    "topic": "Training",
+    "minutes": 7,
+    "original": "Learning from Distribution: Rethinking One-Hot Supervision for ASR and QA in Speech Language Models",
+    "url": "https://arxiv.org/html/2611.20436v1",
+    "title": {
+      "zh": "为什么练会了转录，反而不擅长回答问题？",
+      "en": "Learning from Distribution: Rethinking One-Hot Supervision for ASR and QA in Speech Language Models"
+    },
+    "intro": {
+      "zh": "同一段语音，“请转录”和“请回答”要求不同。",
+      "en": "Training speech models only against transcription text can teach them to repeat audio instead of responding to a spoken question."
+    },
+    "body": {
+      "zh": [
+        "同一段语音，“请转录”和“请回答”要求不同。作者发现，只用标准转录文本作为训练目标，语音模型容易学成听到什么就复述什么。他们让一个冻结的文本模型提供每一步的候选词概率，再让听音频的模型去拟合这组概率。为节省存储，训练只保留最可能的几个词，以及其余词的概率总和。在仅使用转录训练样本的对照中，英语口语问答准确率从 2.44% 升到 40.20%，转录词错率也略有下降。这个差距属于特定训练设置，实验只覆盖 Whisper-large-v3 搭配 Qwen3-4B 的架构。"
+      ],
+      "en": [
+        "Training speech models only against transcription text can teach them to repeat audio instead of responding to a spoken question. This method uses a frozen text teacher’s next-token distribution rather than one-hot targets, storing only top candidates and residual probability mass. In a transcript-only comparison, spoken-English QA accuracy rises from 2.44% to 40.20%, while transcription error also slightly improves."
+      ]
+    },
+    "limits": {
+      "zh": "实验集中在 Whisper-large-v3 与 Qwen3-4B 的特定组合。",
+      "en": "The experiment covers a specific Whisper-large-v3 and Qwen3-4B architecture; the size of the gain is setting-specific."
+    },
+    "path": {
+      "zh": "Figure 2 · §3.3 · Table 1",
+      "en": "Figure 2 · §3.3 · Table 1"
+    }
+  },
+  {
+    "id": "k2-horizon",
+    "issue": "2026-11-17",
+    "published": "2026-11-16",
+    "source": "Institute of Foundation Models",
+    "topic": "Architecture",
+    "minutes": 6,
+    "original": "K2-Horizon: A Frontier Fleet of Open Source Language Models",
+    "url": "https://arxiv.org/html/2611.21003v1",
+    "title": {
+      "zh": "混合专家也能用在注意力里吗？",
+      "en": "K2-Horizon: A Frontier Fleet of Open Source Language Models"
+    },
+    "intro": {
+      "zh": "常见的混合专家模型在前馈层为每个 token 选少量专家。",
+      "en": "K2-Horizon’s 36B model extends mixture-of-experts routing to attention value vectors."
+    },
+    "body": {
+      "zh": [
+        "常见的混合专家模型在前馈层为每个 token 选少量专家。K2-Horizon 的 36B 版本把这个做法也用在注意力的值向量上，也就是其他位置能从该 token 读到的内容。它从 64 个值专家中选 4 个，只缓存合并后的向量，因此这项改动不增加 KV 缓存的大小。用相同数据训练时，作者报告该模型每个 token 激活约 46 亿参数，在四项基准上比 320 亿参数的稠密版低 1.2–3.7 分。激活参数数衡量每步参与计算的权重，实际推理速度还受专家路由和硬件影响。"
+      ],
+      "en": [
+        "K2-Horizon’s 36B model extends mixture-of-experts routing to attention value vectors. It selects four of sixty-four value experts and caches their combined vector, avoiding a larger KV cache for this change. With matched training data, the authors report approximately 4.6B active parameters per token and scores 1.2–3.7 points below a dense 32B model on four benchmarks."
+      ]
+    },
+    "limits": {
+      "zh": "活跃参数数不等于实际速度；模型九月已发布，十一月日期对应技术报告。",
+      "en": "Active parameter count does not determine wall-clock speed. The model was released in September; the November date refers to the technical report."
+    },
+    "path": {
+      "zh": "Figure 2 · §2.2",
+      "en": "Figure 2 · §2.2"
+    }
+  },
+  {
+    "id": "windex",
+    "issue": "2026-11-17",
+    "published": "2026-11-16",
+    "source": "City University of Hong Kong · CyberOrigin",
+    "topic": "Robotics",
+    "minutes": 5,
+    "original": "WinDEX: Metric 3D Hand Motion Reconstruction in the Wild for Dexterous Teleoperation and Policy Learning",
+    "url": "https://arxiv.org/html/2611.21143v1",
+    "title": {
+      "zh": "怎样把第一人称视频变成机器人能学的动作？",
+      "en": "WinDEX: Metric 3D Hand Motion Reconstruction in the Wild for Dexterous Teleoperation and Policy Learning"
+    },
+    "intro": {
+      "zh": "头戴相机跟着人一起动，画面里的手部位移混合了手和头的运动。",
+      "en": "WinDEX separates hand motion from head-camera motion in first-person recordings."
+    },
+    "body": {
+      "zh": [
+        "头戴相机跟着人一起动，画面里的手部位移混合了手和头的运动。WinDEX 用双目相机估计手指和腕部的三维位置，再结合惯性传感器估计相机运动，把手部轨迹还原到固定坐标系。作者在相同训练设置下替换动作参考，五种物体、两种机械手的模拟抓取成功率平均为 61%，两个对照方案分别为 8% 和 17%。真机试验借助了外部相机定位，长时间遮挡和换用不同采集设备也仍是难点。"
+      ],
+      "en": [
+        "WinDEX separates hand motion from head-camera motion in first-person recordings. Stereo vision estimates wrist and finger positions, while inertial measurements recover camera movement and a fixed coordinate frame. Replacing action references under matched training yields 61% average simulated grasp success over five objects and two robot hands, versus 8% and 17% for two baselines."
+      ]
+    },
+    "limits": {
+      "zh": "真机实验使用外部相机定位，长时间遮挡和跨设备迁移仍有困难。",
+      "en": "Real-robot trials used external-camera localization. Long occlusions and changes in capture hardware remain difficult."
+    },
+    "path": {
+      "zh": "Figure 2 · Figure 12 · §VIII",
+      "en": "Figure 2 · Figure 12 · §VIII"
+    }
+  },
+  {
+    "id": "jvt-pixel-video",
+    "issue": "2026-11-16",
+    "published": "2026-11-13",
+    "source": "Zhejiang University · Shanghai AI Laboratory · Shanghai Innovation Institute",
+    "topic": "Generation",
+    "minutes": 7,
+    "original": "JVT: Just Video Transformer makes pixel-space video diffusion simple",
+    "url": "https://arxiv.org/html/2611.18549v1",
+    "title": {
+      "zh": "视频生成可以直接在像素上做吗？",
+      "en": "JVT: Just Video Transformer makes pixel-space video diffusion simple"
+    },
+    "intro": {
+      "zh": "许多视频扩散模型先用预训练的自编码器压缩视频，再在压缩后的表示上去噪。",
+      "en": "JVT generates video directly in pixel space rather than relying on a separate pretrained autoencoder."
+    },
+    "body": {
+      "zh": [
+        "许多视频扩散模型先用预训练的自编码器压缩视频，再在压缩后的表示上去噪。JVT 把原始视频划成跨帧的小块，先提取每帧的空间特征，再聚合同一位置随时间的变化，由 Transformer 直接预测去噪后的像素。这种设计让画面和逐像素的远近信息可以一起生成。在 RealEstate10K 上，加入远近信息后，严格阈值下的相对平移准确率从 72.4% 升到 79.5%，视频质量指标略有退步。论文的主要生成基准使用 16 帧短片，长视频的一致性仍需验证。先看 图 2、§3.2 和表 5。"
+      ],
+      "en": [
+        "JVT generates video directly in pixel space rather than relying on a separate pretrained autoencoder. It extracts spatial features within frames, aggregates changes across time, and predicts denoised pixels. Jointly generating depth raises strict relative-translation accuracy on RealEstate10K from 72.4% to 79.5%, with a slight loss in video-quality metrics."
+      ]
+    },
+    "limits": {
+      "zh": "主要生成基准为十六帧短片，长视频一致性仍待验证。",
+      "en": "The main generation benchmarks use sixteen-frame clips; long-video consistency remains unestablished."
+    },
+    "path": {
+      "zh": "Figure 2 · §3.2 · Table 5",
+      "en": "Figure 2 · §3.2 · Table 5"
+    }
+  },
+  {
+    "id": "standard-model-lattice",
+    "issue": "2026-11-16",
+    "published": "2026-11-15",
+    "source": "Nathaniel Craig · OpenAI Science",
+    "topic": "Science",
+    "minutes": 6,
+    "original": "A step toward defining the Standard Model on a lattice",
+    "url": "https://openai.com/index/step-toward-defining-the-standard-model/",
+    "title": {
+      "zh": "研究者怎样和 AI 一起推进粒子物理证明？",
+      "en": "A step toward defining the Standard Model on a lattice"
+    },
+    "intro": {
+      "zh": "把时空切成网格，可以帮助物理学家研究粒子的相互作用，而无需把这些相互作用当作很小的修正。",
+      "en": "Nathaniel Craig describes collaborating with Astra on a candidate lattice construction for particle physics."
+    },
+    "body": {
+      "zh": [
+        "把时空切成网格，可以帮助物理学家研究粒子的相互作用，而无需把这些相互作用当作很小的修正。难点之一是，网格上的力场绕一圈回到原状时，描述粒子的数学量可能累积一个额外相位。Craig 提出用一系列更细的网格计算这个修正。按他的复盘，GPT‑6 Astra 补上了如何在网格间转换、为何计算结果会收敛的论证，并主导了详细证明的推导，外部物理学家也审读并提出问题。成果仍是有限网格间距下的候选构造，连续时空下的完整理论和实际模拟还有待研究。读 Building the construction with Astra 和 What comes next。"
+      ],
+      "en": [
+        "Nathaniel Craig describes collaborating with Astra on a candidate lattice construction for particle physics. The model helped develop arguments about transferring between successively finer lattices and convergence, while external physicists reviewed the work. The account illustrates distinct roles for proposing a construction, developing a proof, and checking its mathematical meaning."
+      ]
+    },
+    "limits": {
+      "zh": "结果仍是有限网格间距的候选构造，连续理论及实际模拟尚待研究。",
+      "en": "This remains a candidate construction at finite lattice spacing; the continuum theory and practical simulations need further work."
+    },
+    "path": {
+      "zh": "Building the construction with Astra · What comes next",
+      "en": "Building the construction with Astra · What comes next"
+    }
+  },
+  {
+    "id": "nvidia-snapshot",
+    "issue": "2026-11-16",
+    "published": "2026-11-10",
+    "source": "NVIDIA",
+    "topic": "Infrastructure",
+    "minutes": 5,
+    "original": "Start and Restore GPU Workloads in Seconds with NVIDIA Snapshot",
+    "url": "https://developer.nvidia.com/blog/start-and-restore-gpu-workloads-in-seconds-with-nvidia-snapshot/",
+    "title": {
+      "zh": "推理服务冷启动，为什么光加载权重还不够？",
+      "en": "Start and Restore GPU Workloads in Seconds with NVIDIA Snapshot"
+    },
+    "intro": {
+      "zh": "推理副本启动时，除了读入权重，还要准备运行缓冲区、编译 GPU 算子和捕获 CUDA 图。",
+      "en": "Snapshot saves initialized CPU and GPU state so compatible machines can skip repeated buffer setup, kernel compilation, and CUDA-graph capture."
+    },
+    "body": {
+      "zh": [
+        "推理副本启动时，除了读入权重，还要准备运行缓冲区、编译 GPU 算子和捕获 CUDA 图。Snapshot 把初始化后的 CPU 和 GPU 状态存成快照，让兼容机器跳过这些重复步骤。NVIDIA 在 8 张 B200 上用 vLLM 测试 DeepSeek‑V4.1‑Flash，报告从约 18.5 分钟降到 31 秒，代价是预先制作约 647 GB 的快照。计时不包含拉取容器镜像，恢复也要求相同的 GPU 型号和驱动。读 图 1、Methodology 和表 1。"
+      ],
+      "en": [
+        "Snapshot saves initialized CPU and GPU state so compatible machines can skip repeated buffer setup, kernel compilation, and CUDA-graph capture. NVIDIA reports restoring a vLLM DeepSeek-V4.1-Flash workload on eight B200s in 31 seconds instead of approximately 18.5 minutes, using a prebuilt snapshot of about 647 GB."
+      ]
+    },
+    "limits": {
+      "zh": "计时不含容器拉取；恢复要求相同 GPU 型号和驱动，快照本身也有存储成本。",
+      "en": "Timing excludes container-image download. Restore requires matching GPUs and drivers, and the snapshot adds substantial storage cost."
+    },
+    "path": {
+      "zh": "Figure 1 · Methodology · Table 1",
+      "en": "Figure 1 · Methodology · Table 1"
+    }
+  },
+  {
+    "id": "strong-safety-evaluations",
+    "issue": "2026-11-15",
+    "published": "2026-11-13",
+    "source": "Anthropic",
+    "topic": "Evaluation",
+    "minutes": 7,
+    "original": "Building strong safety evaluations",
+    "url": "https://www.anthropic.com/research/building-strong-safety-evaluations",
+    "title": {
+      "zh": "安全评估里，98% 和 94% 差得多吗？",
+      "en": "Building strong safety evaluations"
+    },
+    "intro": {
+      "zh": "Anthropic 在一项多轮对话测试里测得两个模型的恰当回应率分别为 98% 和 94%，但差异未达到统计显著，作者因此无法判断哪个表现更好。",
+      "en": "Anthropic explains how paired evaluation, uncertainty estimates, and human calibration improve safety comparisons."
+    },
+    "body": {
+      "zh": [
+        "Anthropic 在一项多轮对话测试里测得两个模型的恰当回应率分别为 98% 和 94%，但差异未达到统计显著，作者因此无法判断哪个表现更好。文章建议让两个模型回答同一组题，按题计算差异和置信区间，同时用人工标注校准自动评分器。它还给出一个容易被忽略的细节：同一模型在 API 和带产品系统提示的网页端，部分测试分数相差最高达 34 个百分点。这些数字来自 Anthropic 自己的测试配置。读其他评估报告时，也可以先看它测的是哪个版本、在哪种配置下测，以及分差有多大不确定性。读原文 Design 中的评分器校准和 Report。"
+      ],
+      "en": [
+        "Anthropic explains how paired evaluation, uncertainty estimates, and human calibration improve safety comparisons. In one multi-turn test, appropriate-response rates of 98% and 94% were not statistically distinguishable. Some API-versus-product configurations differed by as much as thirty-four percentage points, showing why the evaluated system configuration matters."
+      ]
+    },
+    "limits": {
+      "zh": "数字来自作者特定测试；分数差不能脱离置信区间和运行配置比较。",
+      "en": "These are configuration-specific internal measurements. Score gaps need confidence intervals and a precise description of the evaluated system."
+    },
+    "path": {
+      "zh": "Design: grader calibration · Report",
+      "en": "Design: grader calibration · Report"
+    }
+  },
+  {
+    "id": "antigravity-teamwork",
+    "issue": "2026-11-15",
+    "published": "2026-11-13",
+    "source": "Google Research",
+    "topic": "Science",
+    "minutes": 6,
+    "original": "Advancing science & engineering with Antigravity’s /teamwork",
+    "url": "https://research.google/blog/advancing-science-engineering-with-antigravitys-teamwork-feature/",
+    "title": {
+      "zh": "AI 参与数学研究时，怎么检查一份长证明？",
+      "en": "Advancing science & engineering with Antigravity’s /teamwork"
+    },
+    "intro": {
+      "zh": "Google 的做法是让多个 Agent 并行探索候选证明，再交给 Lean 4 这样的证明检查器逐步验证。",
+      "en": "Google describes parallel agent exploration followed by formal checking in Lean 4."
+    },
+    "body": {
+      "zh": [
+        "Google 的做法是让多个 Agent 并行探索候选证明，再交给 Lean 4 这样的证明检查器逐步验证。在 Courtade–Kumar 猜想的案例中，香港中文大学团队提出了把问题化为 14 变量优化的新思路，Gemini 协助划分参数空间、推导界限，团队随后用 Lean 形式化了整份证明。这里有两个不同的验证步骤：数学家确认写进 Lean 的命题确实对应原问题，Lean 再检查推导是否成立。博客展示的是成功案例，没有给出这套方法在随意选取的开放问题上的成功率。读 Scaling long-horizon reasoning 和 Courtade–Kumar 案例。"
+      ],
+      "en": [
+        "Google describes parallel agent exploration followed by formal checking in Lean 4. In the Courtade–Kumar case, a CUHK team reduced the problem to a fourteen-variable optimization, Gemini assisted with bounds and parameter-space partitioning, and the team formalized the proof. Mathematicians check that the formal statement matches the intended problem; Lean checks the derivation."
+      ]
+    },
+    "limits": {
+      "zh": "文章为成功案例，未提供随机开放问题上的整体成功率。",
+      "en": "This is a successful case study, not an estimate of success over arbitrary open research problems."
+    },
+    "path": {
+      "zh": "Scaling long-horizon reasoning · Courtade–Kumar case study",
+      "en": "Scaling long-horizon reasoning · Courtade–Kumar case study"
+    }
+  },
+  {
+    "id": "aura-streaming-video",
+    "issue": "2026-11-15",
+    "published": "2026-11-12",
+    "source": "Huawei · HKUST · CUHK",
+    "topic": "Multimodal",
+    "minutes": 5,
+    "original": "AURA 2.0: From User-Driven Responses to Model-Initiated Conversations in Streaming Video",
+    "url": "https://arxiv.org/html/2611.17048v1",
+    "title": {
+      "zh": "看直播的 AI，什么时候该主动开口？",
+      "en": "AURA 2.0: From User-Driven Responses to Model-Initiated Conversations in Streaming Video"
+    },
+    "intro": {
+      "zh": "AURA 2.0 逐段处理视频，每次先决定保持沉默还是回应。",
+      "en": "AURA 2.0 processes video incrementally and chooses whether to speak or remain silent."
+    },
+    "body": {
+      "zh": [
+        "AURA 2.0 逐段处理视频，每次先决定保持沉默还是回应。它保留最近 30 秒的画面，把更早的事件压缩成带时间戳的文字，以便延续对话。作者在内部测试中发现，有对话背景时，模型在 25 个由人工标记的合适时段内主动开口了 20 次，整段视频中发言频率的中位数是每分钟 3 次。样本较小，回应质量主要由模型评分，研究也未验证长期使用时用户愿意被打断多少次。读 §3.1 的架构图和 §7.3 的评估。"
+      ],
+      "en": [
+        "AURA 2.0 processes video incrementally and chooses whether to speak or remain silent. It retains thirty seconds of recent frames and compresses older events into timestamped text. In a small internal evaluation with conversational context, it initiated responses in twenty of twenty-five human-identified windows, with a median rate of three utterances per minute."
+      ]
+    },
+    "limits": {
+      "zh": "样本较小且质量主要由模型评分，未验证用户长期接受的打断频率。",
+      "en": "The sample is small, quality judgments are largely model-based, and acceptable interruption frequency in sustained use is untested."
+    },
+    "path": {
+      "zh": "§3.1 · §7.3",
+      "en": "§3.1 · §7.3"
+    }
+  },
+  {
+    "id": "unbundling-vision-encoding",
+    "issue": "2026-11-13",
+    "published": "2026-11-12",
+    "source": "New York University · Meta FAIR",
+    "topic": "Architecture",
+    "minutes": 7,
+    "original": "Unbundling Multimodal Vision Encoding",
+    "url": "https://arxiv.org/html/2611.17334v1",
+    "title": {
+      "zh": "视觉语言模型需要单独的视觉编码器吗？",
+      "en": "Unbundling Multimodal Vision Encoding"
+    },
+    "intro": {
+      "zh": "研究团队把视觉编码器的设计拆成三个问题。",
+      "en": "The study separates three choices in vision-language models: separate visual pretraining, image-specific parameters, and where those parameters sit."
+    },
+    "body": {
+      "zh": [
+        "研究团队把视觉编码器的设计拆成三个问题。图像模块是否要单独预训练？模型是否需要专门处理图像的参数？这些参数应放在图文融合之前，还是放进主干网络？在相同数据和总训练算力下，作者发现，和主干一起从头训练的视觉编码器也能取得相近的视觉问答成绩。给图像保留专用参数更有帮助，尤其是读字和读图表。把这些参数放进主干的前几层，表现也接近独立编码器。主要实验采用最高 64 亿参数的稠密主干和 224×224 图像，更高分辨率、视频输入和混合专家架构仍待验证。"
+      ],
+      "en": [
+        "The study separates three choices in vision-language models: separate visual pretraining, image-specific parameters, and where those parameters sit. Under matched data and compute, jointly trained encoders can reach similar visual-QA performance. Dedicated visual parameters help, particularly for text and charts, and placing them in early backbone layers can approach a standalone encoder."
+      ]
+    },
+    "limits": {
+      "zh": "主要实验上限为 6.4B 稠密主干和 224×224 图片，视频及更高分辨率待验证。",
+      "en": "Main experiments use dense backbones up to 6.4B parameters and 224×224 images. Video, higher resolution, and MoE settings need validation."
+    },
+    "path": {
+      "zh": "Table 2 · Figure 4 · §8",
+      "en": "Table 2 · Figure 4 · §8"
+    }
+  },
+  {
+    "id": "streaming-dictation-failures",
+    "issue": "2026-11-13",
+    "published": "2026-11-12",
+    "source": "HeyLemon",
+    "topic": "Evaluation",
+    "minutes": 6,
+    "original": "Beyond Word Error Rate: A Failure Taxonomy of Streaming Dictation ASR",
+    "url": "https://arxiv.org/html/2611.16919v1",
+    "title": {
+      "zh": "实时听写漏了一句话，可能是模型根本没收到",
+      "en": "Beyond Word Error Rate: A Failure Taxonomy of Streaming Dictation ASR"
+    },
+    "intro": {
+      "zh": "作者把相同录音以实时语速送给 11 个语音识别系统，把问题分为识别错误、输出格式、语言处理和模型前的音频丢失。",
+      "en": "This taxonomy distinguishes recognition mistakes from formatting, language handling, and audio discarded before inference."
+    },
+    "body": {
+      "zh": [
+        "作者把相同录音以实时语速送给 11 个语音识别系统，把问题分为识别错误、输出格式、语言处理和模型前的音频丢失。一个对照很直观。同一套自托管 Whisper 在一种配置下用语音活动检测器切分音频，但保留所有片段，耳语词错误率是 10.1%。让同一个检测器丢弃它判为静音的片段后，错误率升到 51.4%。这解释了为什么相近的平均错误率可能掩盖完全不同的故障。主要英文听写集来自一位朗读者，作者另外用 107 位说话者的公开录音复核了耳语现象。"
+      ],
+      "en": [
+        "This taxonomy distinguishes recognition mistakes from formatting, language handling, and audio discarded before inference. With the same self-hosted Whisper system and voice-activity detector, whisper error rate is 10.1% when all audio segments are retained, but 51.4% when segments labeled silent are dropped. Similar overall word error rates can conceal different system failures."
+      ]
+    },
+    "limits": {
+      "zh": "主要英文听写来自一位朗读者；耳语现象另用 107 位说话者公开录音复核。",
+      "en": "The main English dictation set has one reader; the whispering result was additionally checked using public recordings from 107 speakers."
+    },
+    "path": {
+      "zh": "§6.2 · §9 · §11",
+      "en": "§6.2 · §9 · §11"
+    }
+  },
+  {
+    "id": "antembed",
+    "issue": "2026-11-13",
+    "published": "2026-11-12",
+    "source": "Soochow University · Ant Group",
+    "topic": "Retrieval",
+    "minutes": 5,
+    "original": "AntEmbed: Dual-Mode Multimodal Embedding Model for Efficient and Fine-Grained Retrieval",
+    "url": "https://arxiv.org/html/2611.16405v1",
+    "title": {
+      "zh": "同一个图文索引，既能快速查，也能先分析再查",
+      "en": "AntEmbed: Dual-Mode Multimodal Embedding Model for Efficient and Fine-Grained Retrieval"
+    },
+    "intro": {
+      "zh": "AntEmbed 让原始输入和补充了检索意图的输入映射到同一个向量空间，再用后者教前者保留更细的语义线索。",
+      "en": "AntEmbed maps direct inputs and reasoning-enriched inputs into a shared embedding space, allowing simple and complex queries to use one candidate index."
+    },
+    "body": {
+      "zh": [
+        "AntEmbed 让原始输入和补充了检索意图的输入映射到同一个向量空间，再用后者教前者保留更细的语义线索。这样，普通查询可以直接编码，复杂查询可以先生成一段对检索意图的分析，两者共用同一套候选索引。在 MMEB‑v2 上，8B 模型的总分从直接编码的 73.1 升到推理模式的 81.5。两组都使用预先构建的推理增强候选索引，分差反映的是查询侧切换模式的收益。推理模式多了一步文本生成，评测分数本身没有衡量这一步的线上成本。"
+      ],
+      "en": [
+        "AntEmbed maps direct inputs and reasoning-enriched inputs into a shared embedding space, allowing simple and complex queries to use one candidate index. On MMEB-v2, the 8B model scores 73.1 in direct mode and 81.5 in reasoning mode. Both use an already reasoning-enriched candidate index, so the comparison isolates query-side mode changes."
+      ]
+    },
+    "limits": {
+      "zh": "推理查询多出文本生成成本，基准总分未衡量该线上开销。",
+      "en": "Reasoning mode adds text-generation work; benchmark scores do not measure that online cost."
+    },
+    "path": {
+      "zh": "§3.3–3.4 · Table 1",
+      "en": "§3.3–3.4 · Table 1"
+    }
+  },
+  {
+    "id": "one2n",
+    "issue": "2026-11-12",
+    "published": "2026-11-09",
+    "source": "Institute of Tibetan Plateau Research, Chinese Academy of Sciences · collaborators",
+    "topic": "Science",
+    "minutes": 7,
+    "original": "One2N: Recursive refinement breaks the resolution barrier for Earth-system AI",
+    "url": "https://arxiv.org/html/2611.12249v1",
+    "title": {
+      "zh": "把全球天气预报的网格缩小十倍，要重新训练整个模型吗？",
+      "en": "One2N: Recursive refinement breaks the resolution barrier for Earth-system AI"
+    },
+    "intro": {
+      "zh": "One2N 保留现有的 NeuralGCM，让它在 0.7° 网格上预测大尺度天气，再训练一个模块，学习粗网格预报与 0.07° 参考数据之间的差值。",
+      "en": "One2N retains a 0.7° NeuralGCM forecast and learns a residual refinement toward 0.07° reference data."
+    },
+    "body": {
+      "zh": [
+        "One2N 保留现有的 NeuralGCM，让它在 0.7° 网格上预测大尺度天气，再训练一个模块，学习粗网格预报与 0.07° 参考数据之间的差值。作者用一张 80 GB 显卡、约四周完成了细化模块的训练。2023 年回测中，细化后的预报呈现了更多局部结构，部分上平流层变量的误差也下降了。对流层整体表现和原模型相近，热带气旋路径误差也接近原模型。网格变细和预报变准是两件需要分别测量的事。论文只验证了一层细化，长期稳定性和多层叠加效果仍待检验。"
+      ],
+      "en": [
+        "One2N retains a 0.7° NeuralGCM forecast and learns a residual refinement toward 0.07° reference data. The refinement module trains in about four weeks on one 80 GB GPU. In 2023 hindcasts it reveals more local structure and improves some upper-stratospheric variables, while overall tropospheric and cyclone-track results remain close to the original model."
+      ]
+    },
+    "limits": {
+      "zh": "网格变细不代表整体更准；只验证一层细化，长期稳定和多层叠加待测。",
+      "en": "Finer resolution is not equivalent to globally higher accuracy. Only one refinement level is tested, leaving long-term stability and recursion open."
+    },
+    "path": {
+      "zh": "Figure 1 · Figure 2 · Discussion",
+      "en": "Figure 1 · Figure 2 · Discussion"
+    }
+  },
+  {
+    "id": "on-policy-midtraining",
+    "issue": "2026-11-12",
+    "published": "2026-11-10",
+    "source": "Fudan · PolyU · Sichuan University · Alibaba · Shanghai Jiao Tong University",
+    "topic": "Training",
+    "minutes": 6,
+    "original": "Beyond Passive Imitation: On-Policy Mid-Training Distillation for Language Models",
+    "url": "https://arxiv.org/html/2611.13855v1",
+    "title": {
+      "zh": "同一批数学语料，为什么一个模型学得更好，另一个反而退步？",
+      "en": "Beyond Passive Imitation: On-Policy Mid-Training Distillation for Language Models"
+    },
+    "intro": {
+      "zh": "作者让 Llama‑3.2‑3B 和 Qwen3‑1.7B 用同一批数学语料继续训练，前者在两项评测中进步，后者退步。",
+      "en": "Identical mathematical mid-training data can help one model and hurt another."
+    },
+    "body": {
+      "zh": [
+        "作者让 Llama‑3.2‑3B 和 Qwen3‑1.7B 用同一批数学语料继续训练，前者在两项评测中进步，后者退步。新方法从语料中挑出学生模型不确定的位置，让它自己续写，再由冻结的教师模型给这些续写过程提供逐词反馈。这样，学生训练时会遇到自己实际容易走到的解题路径。在 MATH‑500 上，Qwen 学生的平均单次答对率由 18.5% 升至 30.5%。对照组用了不同学习率，且结果集中在一个学生模型和两项数学评测上。"
+      ],
+      "en": [
+        "Identical mathematical mid-training data can help one model and hurt another. This method selects uncertain positions, lets the student generate continuations, and obtains token-level feedback from a frozen teacher along those trajectories. Qwen3-1.7B’s average single-attempt MATH-500 accuracy rises from 18.5% to 30.5% in the reported setup."
+      ]
+    },
+    "limits": {
+      "zh": "对照学习率不同，结果集中在一个学生模型及两项数学评测。",
+      "en": "Baselines use different learning rates, and results focus on one student model and two mathematical evaluations."
+    },
+    "path": {
+      "zh": "Figure 1 · §3.2 · Table 1",
+      "en": "Figure 1 · §3.2 · Table 1"
+    }
+  },
+  {
+    "id": "worse-together",
+    "issue": "2026-11-12",
+    "published": "2026-11-11",
+    "source": "Anthropic Alignment Science",
+    "topic": "Evaluation",
+    "minutes": 6,
+    "original": "Worse Together: How Performance Breaks Down in Multi-User Multi-Agent Teams",
+    "url": "https://alignment.anthropic.com/2026/worse-together/",
+    "title": {
+      "zh": "每人一个 Agent，为什么共享任务反而更难办？",
+      "en": "Worse Together: How Performance Breaks Down in Multi-User Multi-Agent Teams"
+    },
+    "intro": {
+      "zh": "团队在四种模拟场景里比较了两种安排：一名 Agent 统一协调，或每位用户各有一个 Agent、彼此发消息。",
+      "en": "Across four simulated shared-resource scenarios, one coordinating agent scores above separate agents acting for individual users for both tested Claude models."
+    },
+    "body": {
+      "zh": [
+        "团队在四种模拟场景里比较了两种安排：一名 Agent 统一协调，或每位用户各有一个 Agent、彼此发消息。对两款受测 Claude 模型，统一协调在四个场景中的团体得分均更高。团体订餐尤其直观：在 94%–99% 的回合中，关键请求发给了最终下单的 Agent，但下单时只有 47%–67% 的回合里，这条请求已进入它的上下文。等待消息读完再提交，能挽回部分失败。这个实验测的是不同用户争用共享资源，团体得分也可能漏掉未经同意取消他人任务等行为。"
+      ],
+      "en": [
+        "Across four simulated shared-resource scenarios, one coordinating agent scores above separate agents acting for individual users for both tested Claude models. In group food ordering, critical requests are sent in 94%–99% of rounds but reach the ordering agent’s context before submission in only 47%–67%. Waiting for messages recovers some failures."
+      ]
+    },
+    "limits": {
+      "zh": "测试针对共享资源；团体得分可能漏掉未经同意取消他人任务等行为。",
+      "en": "The setting concerns shared resources, and group scores can miss behaviors such as canceling another user’s task without consent."
+    },
+    "path": {
+      "zh": "Setup · Personal Assistant · Figure 4",
+      "en": "Setup · Personal Assistant · Figure 4"
+    }
+  },
+  {
+    "id": "lingbot-touch",
+    "issue": "2026-11-11",
+    "published": "2026-11-09",
+    "source": "Ant Group Robbyant",
+    "topic": "Robotics",
+    "minutes": 7,
+    "original": "Learning Heterogeneous Tactile Representation for General Dexterous Manipulation",
+    "url": "https://arxiv.org/abs/2611.12806",
+    "title": {
+      "zh": "不同传感器采到的「手感」，能用同一个模型学吗？",
+      "en": "Learning Heterogeneous Tactile Representation for General Dexterous Manipulation"
+    },
+    "intro": {
+      "zh": "同一次指尖接触，压阻传感器记录电阻变化，磁传感器记录磁场变化，视触觉传感器则拍下材料形变。",
+      "en": "LingBot-Touch maps heterogeneous tactile sensors into a common fingertip coordinate system and learns a shared encoder from about 5,000 hours of data."
+    },
+    "body": {
+      "zh": [
+        "同一次指尖接触，压阻传感器记录电阻变化，磁传感器记录磁场变化，视触觉传感器则拍下材料形变。LingBot‑Touch 先把不同传感器的测量位置映射到统一的指尖坐标，再用约 5,000 小时的触觉数据训练一个共享编码器。训练时遮住部分信号，让模型预测缺失部分的特征，因此无需人工逐帧标注接触位置或力度。",
+        "在五项真机任务中，同一动作模型加入触觉特征后，作者报告平均得分从 55.9% 升到 82.2%。评分会给已完成的步骤部分分数。实验覆盖两种机械手，预训练主要覆盖指尖，手掌接触和电容式传感器仍待验证。"
+      ],
+      "en": [
+        "LingBot-Touch maps heterogeneous tactile sensors into a common fingertip coordinate system and learns a shared encoder from about 5,000 hours of data. Masked prediction avoids frame-by-frame contact labels. Adding tactile features raises the authors’ average score on five real-robot tasks from 55.9% to 82.2% under the same action-model setup."
+      ]
+    },
+    "limits": {
+      "zh": "分数包含步骤部分分；只测两种机械手，手掌及电容式触觉待验证。",
+      "en": "Scores include partial credit. Tests cover two robot hands; palm contact and capacitive sensors remain unvalidated."
+    },
+    "path": {
+      "zh": "Figure 1 · §3.2 · Figure 13",
+      "en": "Figure 1 · §3.2 · Figure 13"
+    }
+  },
+  {
+    "id": "decision-models",
+    "issue": "2026-11-11",
+    "published": "2026-11-10",
+    "source": "Hugging Face",
+    "topic": "Architecture",
+    "minutes": 5,
+    "original": "Decision Models in Hugging Face",
+    "url": "https://huggingface.co/blog/decision",
+    "title": {
+      "zh": "给定选项后，模型可以直接打分",
+      "en": "Decision Models in Hugging Face"
+    },
+    "intro": {
+      "zh": "如果系统只需要判断一条客服请求该转给谁、是否紧急、是否要求退款，模型可以直接对这些答案打分，省去逐词生成回复再解析的过程。",
+      "en": "Decision-model interfaces score user-defined answer options directly instead of generating text and parsing it."
+    },
+    "body": {
+      "zh": [
+        "如果系统只需要判断一条客服请求该转给谁、是否紧急、是否要求退款，模型可以直接对这些答案打分，省去逐词生成回复再解析的过程。文章介绍的接口允许每次请求定义选项，并对同一份输入同时提多个问题，例如选类别、评等级和做是非判断。",
+        "这种接口也能用在兼容的生成模型上。Transformers 可以批量计算候选标签的分数，再把它们转换成概率。文章演示了接口和训练方式，概率是否能反映真实正确率，仍需用有标签的样本验证。"
+      ],
+      "en": [
+        "Decision-model interfaces score user-defined answer options directly instead of generating text and parsing it. One input can support several questions, such as routing, urgency, and refund intent. Compatible generative models can also score candidate labels in batches and convert scores to probabilities."
+      ]
+    },
+    "limits": {
+      "zh": "文章演示接口与训练方式；输出概率是否校准仍需有标签数据验证。",
+      "en": "The article demonstrates interfaces and training patterns. Probability calibration still requires validation on labeled examples."
+    },
+    "path": {
+      "zh": "Where decision models differ · The decision model interface",
+      "en": "Where decision models differ · The decision model interface"
+    }
+  },
+  {
+    "id": "mv-ivf",
+    "issue": "2026-11-11",
+    "published": "2026-11-06",
+    "source": "University of Maryland · Google Research",
+    "topic": "Retrieval",
+    "minutes": 6,
+    "original": "MV-IVF: Multi-Vector Retrieval via Multi-Vector Clustering",
+    "url": "https://arxiv.org/html/2611.09040v1",
+    "title": {
+      "zh": "一篇文档有几十个向量，怎么快速找到它？",
+      "en": "MV-IVF: Multi-Vector Retrieval via Multi-Vector Clustering"
+    },
+    "intro": {
+      "zh": "多向量检索允许查询里的不同词分别匹配文档里的不同位置，代价是每次比较需要计算更多向量。",
+      "en": "MV-IVF groups documents as sets of vectors and summarizes each group with representative vectors."
+    },
+    "body": {
+      "zh": [
+        "多向量检索允许查询里的不同词分别匹配文档里的不同位置，代价是每次比较需要计算更多向量。MV‑IVF 把文档按向量集合分组，并用一小组代表向量描述每个分组。查询沿着分组树找到有希望的分支，再给其中的文档打分。",
+        "在恢复精确排名前 10 项的 90% 这一条件下，论文报告，相对三种主要基线，批量吞吐的几何平均提升为 2.07–4.01 倍。这个召回率衡量的是对精确向量排名的还原程度。提前停止搜索也依赖启发式规则，少搜一些分支可能漏掉候选。"
+      ],
+      "en": [
+        "MV-IVF groups documents as sets of vectors and summarizes each group with representative vectors. Search follows promising branches before scoring individual documents. At 90% recall of the exact top-ten vector ranking, reported geometric-mean batched throughput gains are 2.07–4.01× over three primary baselines."
+      ]
+    },
+    "limits": {
+      "zh": "此召回率衡量向量排名还原，提前停止依赖启发式并可能漏候选。",
+      "en": "Recall measures recovery of the exact vector ranking, not answer quality. Heuristic early stopping can miss candidates."
+    },
+    "path": {
+      "zh": "§4.1–4.2 · §6.2",
+      "en": "§4.1–4.2 · §6.2"
+    }
+  },
+  {
+    "id": "multimodal-arbitration",
+    "issue": "2026-11-10",
+    "published": "2026-11-09",
+    "source": "Purdue University",
+    "topic": "Multimodal",
+    "minutes": 7,
+    "original": "Beyond Modality Preference: Controlling Multimodal Arbitration under Modality Conflict in MLLMs",
+    "url": "https://arxiv.org/html/2611.12883v1",
+    "title": {
+      "zh": "图片和文字互相矛盾，模型会信谁？",
+      "en": "Beyond Modality Preference: Controlling Multimodal Arbitration under Modality Conflict in MLLMs"
+    },
+    "intro": {
+      "zh": "一张图表显示销量下降，旁边的文字却说销量上升。",
+      "en": "When images and text conflict, a vision-language model may follow the text even if instructed otherwise."
+    },
+    "body": {
+      "zh": [
+        "一张图表显示销量下降，旁边的文字却说销量上升。即使提示词写了「以图为准」，视觉语言模型也可能跟着文字回答。研究团队从模型的注意力头中找出一小组会影响这种选择的头，在推理时调整它们对图像和文字的注意力，无需重新训练。",
+        "在 MC² 评测上，指定图像优先后，Qwen3‑VL‑8B 给出图像支持答案的比例从 47.25% 升到 79.50%。这个数字衡量的是模型能否遵循指定的证据优先级。实验由外部指定哪类证据可信，两边都只对了一部分、需要综合判断的情况仍待验证。"
+      ],
+      "en": [
+        "When images and text conflict, a vision-language model may follow the text even if instructed otherwise. The study identifies a small set of influential attention heads and adjusts their image-versus-text attention during inference. On MC², Qwen3-VL-8B’s image-supported answer rate rises from 47.25% to 79.50% when visual evidence is designated authoritative."
+      ]
+    },
+    "limits": {
+      "zh": "可信证据由外部指定，尚未解决图文各自部分正确时的综合判断。",
+      "en": "Evidence priority is supplied externally. Cases requiring integration of partly correct modalities remain open."
+    },
+    "path": {
+      "zh": "§3.3–3.4 · §4.2",
+      "en": "§3.3–3.4 · §4.2"
+    }
+  },
+  {
+    "id": "universal-automl-search",
+    "issue": "2026-11-10",
+    "published": "2026-11-09",
+    "source": "CUHK MMLab · Shenzhen Hetao College",
+    "topic": "Training",
+    "minutes": 6,
+    "original": "Large Language Models as a Universal Searcher for Open-World Automated Machine Learning",
+    "url": "https://arxiv.org/html/2611.12791v1",
+    "title": {
+      "zh": "让语言模型挑选下一组训练配置",
+      "en": "Large Language Models as a Universal Searcher for Open-World Automated Machine Learning"
+    },
+    "intro": {
+      "zh": "调整模型结构时，原本合适的学习率和数据配比也可能要变。",
+      "en": "NCode encodes architecture and training choices as numerical sequences so a language model can select promising candidates from past experiment results."
+    },
+    "body": {
+      "zh": [
+        "调整模型结构时，原本合适的学习率和数据配比也可能要变。作者用 NCode 把这些选项统一编码成数字序列，让语言模型根据之前的实验结果，从一批候选里挑出值得试的组合。搜索器从图像分类的历史实验中学习，作者随后把它用于图像分割、说话人验证和文生图，无需为这些任务重新微调搜索器。",
+        "实际搜索仍要训练候选模型来打分。文生图实验先用更浅、更窄的模型跑短训练，再把选出的配置用于正式训练。这个设计把成本压在较小的试验上，也让结果依赖一个条件：短跑表现得能反映正式训练的潜力。"
+      ],
+      "en": [
+        "NCode encodes architecture and training choices as numerical sequences so a language model can select promising candidates from past experiment results. A searcher learned on image classification is applied to segmentation, speaker verification, and text-to-image generation without task-specific retraining. Candidate configurations still require actual training and scoring."
+      ]
+    },
+    "limits": {
+      "zh": "短训练代理节省成本，但其排名未必反映完整训练的潜力。",
+      "en": "Short proxy runs reduce search cost, but their rankings must predict the potential of full training."
+    },
+    "path": {
+      "zh": "Figure 1 · §IV-D",
+      "en": "Figure 1 · §IV-D"
+    }
+  },
+  {
+    "id": "posttraining-spectral-rank",
+    "issue": "2026-11-10",
+    "published": "2026-11-09",
+    "source": "University of Missouri",
+    "topic": "Training",
+    "minutes": 5,
+    "original": "Spectral Rank and Step-Direction Dynamics in Language-Model Post-Training",
+    "url": "https://arxiv.org/html/2611.11752v1",
+    "title": {
+      "zh": "后训练的权重变化，到底有多「低秩」？",
+      "en": "Spectral Rank and Step-Direction Dynamics in Language-Model Post-Training"
+    },
+    "intro": {
+      "zh": "作者发现，同一次权重变化可以同时满足两种描述：少数主方向特别强，但要保留大部分变化，仍需要许多较弱的方向。",
+      "en": "A weight update can have a few dominant directions while still needing many weaker components to preserve most of its energy."
+    },
+    "body": {
+      "zh": [
+        "作者发现，同一次权重变化可以同时满足两种描述：少数主方向特别强，但要保留大部分变化，仍需要许多较弱的方向。在 OLMo‑2‑7B 的三个注意力权重更新里，衡量主方向集中程度的「稳定秩」只有 9.6–18.3，保留 80% 的矩阵能量却需要 532–1,222 个分量。",
+        "论文还观察到，九个公开强化学习训练阶段中，131 对相邻的检查点更新方向都呈负相关。这些方向来自两次存档之间累积的权重变化，观察结果取决于存档间隔和训练配置。哪些较弱的方向影响任务表现，还需要实际截断权重后再测。"
+      ],
+      "en": [
+        "A weight update can have a few dominant directions while still needing many weaker components to preserve most of its energy. Three OLMo-2-7B attention updates have stable rank 9.6–18.3 but require 532–1,222 components for 80% energy. The authors also find negative correlation for 131 adjacent checkpoint-update pairs across nine public RL stages."
+      ]
+    },
+    "limits": {
+      "zh": "观察依赖检查点间隔；弱方向的功能作用还需截断权重后实测。",
+      "en": "Observations depend on checkpoint spacing and training setup. Functional effects of weaker directions require intervention experiments."
+    },
+    "path": {
+      "zh": "§4.1 · §4.2 · §5",
+      "en": "§4.1 · §4.2 · §5"
+    }
+  },
+  {
+    "id": "groot2",
+    "issue": "2026-11-09",
+    "published": "2026-11-09",
+    "source": "NVIDIA GEAR",
+    "topic": "Robotics",
+    "minutes": 7,
+    "original": "GR00T 2: Scaling Robot Foundation Models for Generalization, Dexterity, and Adaptation",
+    "url": "https://research.nvidia.com/labs/gear/gr00t-2/",
+    "title": {
+      "zh": "机器人能从人类视频里学到多少？",
+      "en": "GR00T 2: Scaling Robot Foundation Models for Generalization, Dexterity, and Adaptation"
+    },
+    "intro": {
+      "zh": "GR00T 2 同时预测机器人接下来要做的动作和动作之后的画面。",
+      "en": "GR00T 2 jointly predicts robot actions and resulting observations, learning from human first-person video, handheld-gripper demonstrations, and robot teleoperation."
+    },
+    "body": {
+      "zh": [
+        "GR00T 2 同时预测机器人接下来要做的动作和动作之后的画面。它把人类第一视角视频、手持夹爪示范和机器人遥操作混在一起训练。人类视频可以提供物体如何移动、任务如何推进的线索，机器人数据则让模型学会如何用具体的机械结构执行动作。",
+        "在目标双臂机器人没练过的 50 项任务中，NVIDIA 报告零样本的试次成功率为 40%，其中 40 项任务至少成功过一次。每项加入五次示范并微调后，试次成功率升到 95%。这些任务曾出现在人类视频或其他机器人的数据里，因此这里测的是跨机器人迁移。"
+      ],
+      "en": [
+        "GR00T 2 jointly predicts robot actions and resulting observations, learning from human first-person video, handheld-gripper demonstrations, and robot teleoperation. On fifty tasks unseen by the target dual-arm robot, NVIDIA reports 40% zero-shot trial success, with at least one success on forty tasks. Five demonstrations per task raise trial success to 95% after adaptation."
+      ]
+    },
+    "limits": {
+      "zh": "任务曾见于人类视频或其他机器人数据，这里衡量跨机器人迁移。",
+      "en": "Tasks had appeared in human or other-robot data; this measures transfer to the target robot rather than wholly unseen task concepts."
+    },
+    "path": {
+      "zh": "Model Architecture · Scaling Human Video in Pretraining · Fast Adaptation",
+      "en": "Model Architecture · Scaling Human Video in Pretraining · Fast Adaptation"
+    }
+  },
+  {
+    "id": "logic-invariant-llms",
+    "issue": "2026-11-09",
+    "published": "2026-11-08",
+    "source": "Elynn Chen · NYU Stern · collaborators",
+    "topic": "Evaluation",
+    "minutes": 6,
+    "original": "Same Logic, Different Words: Why AI Systems Contradict Themselves, and What We Did About It",
+    "url": "https://elynncc.github.io/research/2026/logic-invariant-llms/",
+    "title": {
+      "zh": "同一条逻辑规则，换个说法为什么会改变答案？",
+      "en": "Same Logic, Different Words: Why AI Systems Contradict Themselves, and What We Did About It"
+    },
+    "intro": {
+      "zh": "研究团队把 1,500 道逻辑题改写成含义相同的版本，例如用「并非两项都不满足」表达「至少满足一项」。",
+      "en": "Researchers rewrite 1,500 logical questions into equivalent forms and compare answer stability against repeated original questions."
+    },
+    "body": {
+      "zh": [
+        "研究团队把 1,500 道逻辑题改写成含义相同的版本，例如用「并非两项都不满足」表达「至少满足一项」。在最难的一组改写中，o3 有 37% 的题改变了判断。团队还用原题重复提问，估计模型自身的随机波动。",
+        "他们将规则转成按条件分支的决策图，再训练模型把图的编码和原文一起读。在两种训练设置下，改写导致的答案变动率从 30% 以上降到约 15%。这组实验把答得对和换种说法仍能答得一致分开测量。验证主要集中在可形式化的逻辑题，带有模糊措辞和例外的规则仍需单独验证。"
+      ],
+      "en": [
+        "Researchers rewrite 1,500 logical questions into equivalent forms and compare answer stability against repeated original questions. On the hardest rewrites, o3 changes its judgment on 37% of questions. Training a model to read a decision-diagram representation alongside the rule reduces rewrite-induced changes from above 30% to about 15% in two training setups."
+      ]
+    },
+    "limits": {
+      "zh": "主要覆盖可形式化逻辑，模糊规则与例外仍需验证；来源为作者研究解读。",
+      "en": "Evidence focuses on formalizable logic, leaving ambiguous language and exceptions open. The source is an author-written research explanation."
+    },
+    "path": {
+      "zh": "Free-shipping example · Giving the model a map",
+      "en": "Free-shipping example · Giving the model a map"
+    }
+  },
+  {
+    "id": "specctmc",
+    "issue": "2026-11-09",
+    "published": "2026-11-05",
+    "source": "Siva Rajesh Kasa · Yasong Dai · collaborators",
+    "topic": "Generation",
+    "minutes": 6,
+    "original": "SpecCTMC: Exact Speculative Simulation of Diffusion Language Model Continuous-Time Markov Chains",
+    "url": "https://arxiv.org/html/2611.08362v1",
+    "title": {
+      "zh": "扩散语言模型如何并行填词，又保留词与词之间的依赖？",
+      "en": "SpecCTMC: Exact Speculative Simulation of Diffusion Language Model Continuous-Time Markov Chains"
+    },
+    "intro": {
+      "zh": "扩散语言模型可以从一串空位开始填词。",
+      "en": "SpecCTMC proposes a sequence of token-filling events for a diffusion language model, evaluates candidates in parallel, then accepts them sequentially."
+    },
+    "body": {
+      "zh": [
+        "扩散语言模型可以从一串空位开始填词。若多个位置各自独立填入，先填的词就无法影响后填的词。SpecCTMC 先拟定一串填词动作，让模型批量计算这些候选，再按顺序验收。第一次拒绝时，算法按修正后的概率重抽，并从新状态继续。作者证明，在论文设定下，这保留了逐步采样的概率分布。",
+        "两款文本模型的串行调用轮数降到原来的约 23%–58%。但一次调用需要同时算多个候选，论文的长提示测试中有些配置反而更慢。"
+      ],
+      "en": [
+        "SpecCTMC proposes a sequence of token-filling events for a diffusion language model, evaluates candidates in parallel, then accepts them sequentially. A rejected event is resampled using corrected probabilities. Under the paper’s assumptions this preserves the target stepwise distribution. Serial model-call counts fall to roughly 23%–58% of baseline for two text models."
+      ]
+    },
+    "limits": {
+      "zh": "每次调用需算多个候选；长提示下部分配置实际更慢。",
+      "en": "Each call processes multiple candidates; some long-prompt configurations are slower in wall-clock time despite fewer serial calls."
+    },
+    "path": {
+      "zh": "§4 algorithm illustration · Figure 3",
+      "en": "§4 algorithm illustration · Figure 3"
+    }
+  },
+  {
+    "id": "biobasicsbench",
+    "issue": "2026-11-08",
+    "published": "2026-11-06",
+    "source": "OpenAI · Ligo",
+    "topic": "Science",
+    "minutes": 7,
+    "original": "Measuring how AI agents handle everyday wet-lab science",
+    "url": "https://openai.com/index/measuring-how-ai-agents-handle-wet-lab-science/",
+    "title": {
+      "zh": "AI 能判断实验数据支持什么结论吗？",
+      "en": "Measuring how AI agents handle everyday wet-lab science"
+    },
+    "intro": {
+      "zh": "BioBasicsBench 用实验人员提供的原始数据设计了 100 道题。",
+      "en": "BioBasicsBench contains one hundred questions grounded in raw wet-lab data, including microscopy, plates, and instrument readings."
+    },
+    "body": {
+      "zh": [
+        "BioBasicsBench 用实验人员提供的原始数据设计了 100 道题。模型要看显微图、培养皿照片和仪器读数，既要给出判断，也要识别证据不足的情况。在相同的 xhigh 推理设置下，GPT‑6 Astra 平均拿到 66.7% 的可用分值，GPT‑5.6 Sol 为 43.8%。这是按评分条目计算的平均得分。",
+        "两个案例适合对照着读。一次，Astra 从培养皿边缘的标签发现对照组用了不同的抗生素。另一次，它虽然分对了图像里的条带，却用自己对产物大小的假设压过了实验对照，最后选错样本。评测覆盖的是给定材料后的分析判断，实际操作和完整实验流程在其范围之外。"
+      ],
+      "en": [
+        "BioBasicsBench contains one hundred questions grounded in raw wet-lab data, including microscopy, plates, and instrument readings. Models must interpret evidence and recognize insufficiency. With matched xhigh reasoning settings, the authors report 66.7% of available rubric credit for Astra and 43.8% for Sol. Cases illustrate both useful control detection and unsupported assumptions overriding controls."
+      ]
+    },
+    "limits": {
+      "zh": "评估给定材料后的分析判断，不覆盖实际操作或完整实验流程。",
+      "en": "The benchmark evaluates interpretation of supplied materials, not physical execution or end-to-end laboratory research."
+    },
+    "path": {
+      "zh": "Inside BioBasicsBench · Where models still fall short",
+      "en": "Inside BioBasicsBench · Where models still fall short"
+    }
+  },
+  {
+    "id": "proquant",
+    "issue": "2026-11-08",
+    "published": "2026-11-05",
+    "source": "HKUST · Northwestern Polytechnical University · TeleAI · Tsinghua",
+    "topic": "Infrastructure",
+    "minutes": 7,
+    "original": "ProQuant: Progressive Quantization-aware Training for Edge MLLMs",
+    "url": "https://arxiv.org/html/2611.08216v1",
+    "title": {
+      "zh": "把视觉语言模型压到低精度，哪些层应该先适应？",
+      "en": "ProQuant: Progressive Quantization-aware Training for Edge MLLMs"
+    },
+    "intro": {
+      "zh": "低比特量化用更少的位数表示模型权重和计算中间值。",
+      "en": "ProQuant progressively adapts visually sensitive layers to quantization error before including other layers, while refreshing training answers with the original model."
+    },
+    "body": {
+      "zh": [
+        "低比特量化用更少的位数表示模型权重和计算中间值。ProQuant 在微调中优先让对视觉输入敏感的层适应量化误差，再逐步加入其他层，同时用原模型重新生成训练样本的答案。Qwen3‑VL‑2B 在七项评测中的平均分，使用 4 位权重、8 位中间值时为 72.54，接近 BF16 的 73.63。把中间值也降到 4 位，均分降到 59.83。表 1 还显示，部分任务的降幅比均分更明显。实验覆盖的模型最大为 80 亿参数，更大的模型和不同架构仍待验证。"
+      ],
+      "en": [
+        "ProQuant progressively adapts visually sensitive layers to quantization error before including other layers, while refreshing training answers with the original model. Across seven evaluations, Qwen3-VL-2B averages 72.54 with four-bit weights and eight-bit activations, versus 73.63 in BF16. Four-bit activations reduce the average to 59.83."
+      ]
+    },
+    "limits": {
+      "zh": "均分掩盖部分任务更大降幅；模型最大为 8B，其他规模架构待测。",
+      "en": "Averages hide larger task-specific drops. Experiments cover models up to 8B parameters; other scales and architectures need testing."
+    },
+    "path": {
+      "zh": "Figure 2 · §3.2 · Table 1",
+      "en": "Figure 2 · §3.2 · Table 1"
+    }
+  },
+  {
+    "id": "asr-accent-coverage",
+    "issue": "2026-11-08",
+    "published": "2026-11-06",
+    "source": "Hugging Face · Liva AI",
+    "topic": "Evaluation",
+    "minutes": 4,
+    "original": "Egyptian and Nigerian English join the Open ASR Leaderboard",
+    "url": "https://huggingface.co/blog/open-asr-leaderboard-liva",
+    "title": {
+      "zh": "语音识别排行榜加入了两种英语口音",
+      "en": "Egyptian and Nigerian English join the Open ASR Leaderboard"
+    },
+    "intro": {
+      "zh": "Open ASR Leaderboard 加入埃及英语和尼日利亚英语的非公开测试集，分别约 1.34 和 1.55 小时。",
+      "en": "The Open ASR Leaderboard adds private Egyptian-English and Nigerian-English conversational test sets of about 1.34 and 1.55 hours."
+    },
+    "body": {
+      "zh": [
+        "Open ASR Leaderboard 加入埃及英语和尼日利亚英语的非公开测试集，分别约 1.34 和 1.55 小时。两组都是自然对话，转录保留了口语中的不流畅现象。使用非公开样本是为了降低模型针对已知测试集调优的机会，按口音组别报告则能看到总分可能掩盖的差异。两组样本的时长都有限，文章介绍的是评测覆盖面的变化，具体模型在不同口音上的差距还需看分组结果。"
+      ],
+      "en": [
+        "The Open ASR Leaderboard adds private Egyptian-English and Nigerian-English conversational test sets of about 1.34 and 1.55 hours. Transcripts retain disfluencies. Private examples reduce opportunities to tune directly to public tests, while per-accent reporting exposes differences that an aggregate score can hide."
+      ]
+    },
+    "limits": {
+      "zh": "两组时长有限；文章介绍评测覆盖变化，具体差距需看分组成绩。",
+      "en": "Both sets are small. The article describes broader evaluation coverage; model-specific differences require the subgroup results."
+    },
+    "path": {
+      "zh": "Dataset table · Richer accent breakdown",
+      "en": "Dataset table · Richer accent breakdown"
+    }
+  },
+  {
+    "id": "localization-steerability",
+    "issue": "2026-11-07",
+    "published": "2026-11-05",
+    "source": "Shradha Agarwal · collaborators",
+    "topic": "Architecture",
+    "minutes": 7,
+    "original": "Localization Does Not Imply Steerability: A Mechanistic Study of Sign Errors in LLM Mathematics",
+    "url": "https://arxiv.org/html/2611.07478v1",
+    "title": {
+      "zh": "找到模型写错负号的位置，能修好吗？",
+      "en": "Localization Does Not Imply Steerability: A Mechanistic Study of Sign Errors in LLM Mathematics"
+    },
+    "intro": {
+      "zh": "模型有时会在行列式展开或分部积分里写错一个正负号，后面却一直算对。",
+      "en": "The researchers localize sign mistakes in two types of mathematical tasks across five models."
+    },
+    "body": {
+      "zh": [
+        "模型有时会在行列式展开或分部积分里写错一个正负号，后面却一直算对。作者对五个模型做了完整的定位与干预实验，发现正负号大多在网络后段定下来，而且正确和错误的符号往往由同一批层写出。削弱这些层中偏向负号的信号，在 Llama 的一组分部积分留出样本里翻转了 14 个错误负号中的 13 个，在 Phi-4 上却几乎不起作用。同样的干预也会翻转部分原本正确的负号。读图 1 和图 3 时，可以分别看「哪一层影响输出」和「改动这一层能否提高正确率」。实验只覆盖两类数学题，主要在符号输出的位置评分。"
+      ],
+      "en": [
+        "The researchers localize sign mistakes in two types of mathematical tasks across five models. Correct and incorrect signs often originate in the same late layers. Suppressing negative-sign signals corrects thirteen of fourteen held-out Llama errors in one integration task, but has little effect on Phi-4 and also flips some originally correct signs."
+      ]
+    },
+    "limits": {
+      "zh": "定位到输出相关层并不意味着能可靠修正，实验范围仅两类数学题。",
+      "en": "Localizing influential layers does not establish reliable control. Experiments cover only two mathematical task families."
+    },
+    "path": {
+      "zh": "Figure 1 · Figure 3",
+      "en": "Figure 1 · Figure 3"
+    }
+  },
+  {
+    "id": "components-agent-memory",
+    "issue": "2026-11-07",
+    "published": "2026-11-06",
+    "source": "Anthropic · Lance Martin",
+    "topic": "Memory",
+    "minutes": 6,
+    "original": "The components of agent memory",
+    "url": "https://www.anthropic.com/research/components-of-agent-memory",
+    "title": {
+      "zh": "Agent 的跨会话记忆，怎么纠正记错的内容？",
+      "en": "The components of agent memory"
+    },
+    "intro": {
+      "zh": "文章把记忆拆成四层：原始记录、随手笔记、整理过的 Wiki，以及新会话启动时自动加载的少量信息。",
+      "en": "The article separates raw records, scratch notes, curated wiki pages, and a small startup context."
+    },
+    "body": {
+      "zh": [
+        "文章把记忆拆成四层：原始记录、随手笔记、整理过的 Wiki，以及新会话启动时自动加载的少量信息。会话结束后，Agent 可以回看原始记录，纠正错误笔记或合并重复页面，作者称这一步为 *dreaming*。在一组包含 25 道题的内部文档评估中，Wiki 加原文搜索满足了 61% 的评分条目，仅搜索为 53%，仅 Wiki 的最好成绩为 48%。这个对照说明，在该任务里 Wiki 帮模型找到线索，原文搜索仍提供了不少关键信息。整理和校验本身也消耗算力。"
+      ],
+      "en": [
+        "The article separates raw records, scratch notes, curated wiki pages, and a small startup context. A consolidation phase revisits records to correct errors and merge duplicates. In a twenty-five-question internal-document evaluation, wiki plus original-source search satisfies 61% of rubric criteria, compared with 53% for search alone and a best 48% for wiki alone."
+      ]
+    },
+    "limits": {
+      "zh": "内部评估规模小，记忆整理和校验另有算力成本。",
+      "en": "The internal evaluation is small. Memory consolidation and verification introduce additional computation."
+    },
+    "path": {
+      "zh": "Figure 1 · Figure 10",
+      "en": "Figure 1 · Figure 10"
+    }
+  },
+  {
+    "id": "flashoffloading",
+    "issue": "2026-11-07",
+    "published": "2026-11-05",
+    "source": "Huawei · Shanghai Jiao Tong University",
+    "topic": "Infrastructure",
+    "minutes": 5,
+    "original": "FlashOffloading: Low-Latency KV Cache Offloading for Long-Context LLM Serving",
+    "url": "https://arxiv.org/html/2611.07542v1",
+    "title": {
+      "zh": "把长上下文缓存搬到主机内存，为什么吞吐反而能提高？",
+      "en": "FlashOffloading: Low-Latency KV Cache Offloading for Long-Context LLM Serving"
+    },
+    "intro": {
+      "zh": "KV 缓存保存历史 token 的注意力中间结果，避免模型每生成一个词元就把前文重算一遍。",
+      "en": "FlashOffloading stores the full KV cache in host memory, overlapping future-layer transfers with current-layer computation during input processing."
+    },
+    "body": {
+      "zh": [
+        "KV 缓存保存历史 token 的注意力中间结果，避免模型每生成一个词元就把前文重算一遍。FlashOffloading 把完整缓存放在主机内存中。处理输入时，计算当前层的同时搬运后续层的数据。生成输出时，利用模型的稀疏注意力，只取当前需要的缓存条目。作者在 GLM-5.2 和昇腾 910C 的一组配置中报告，生成吞吐最高达到仅卸载输入阶段缓存时的 1.91 倍。收益来自能同时服务更多请求，单个请求生成每个词元反而更慢。"
+      ],
+      "en": [
+        "FlashOffloading stores the full KV cache in host memory, overlapping future-layer transfers with current-layer computation during input processing. During generation, sparse attention fetches only selected entries. For a GLM-5.2 configuration on Ascend 910C, the authors report up to 1.91× generation throughput relative to input-stage-only offloading."
+      ]
+    },
+    "limits": {
+      "zh": "收益来自更大并发，单请求每词元生成反而更慢，依赖硬件和稀疏模式。",
+      "en": "Higher throughput comes from serving more requests concurrently; per-request token generation is slower. Gains depend on hardware and attention sparsity."
+    },
+    "path": {
+      "zh": "§2.1 · §6.4.2 · Figure 12",
+      "en": "§2.1 · §6.4.2 · Figure 12"
+    }
+  },
+  {
+    "id": "wearable-hypertension",
+    "issue": "2026-11-06",
+    "published": "2026-11-05",
+    "source": "Google Research",
+    "topic": "Science",
+    "minutes": 6,
+    "original": "Detecting signs of hypertension using wearable sensors",
+    "url": "https://research.google/blog/detecting-signs-of-hypertension-using-wearable-sensors/",
+    "title": {
+      "zh": "从日常传感器信号中学习健康特征",
+      "en": "Detecting signs of hypertension using wearable sensors"
+    },
+    "intro": {
+      "zh": "这项研究尝试用手表的光学脉搏和加速度信号，识别持续性高血压风险。",
+      "en": "The study uses self-supervised learning on optical pulse and acceleration signals, then aggregates features across days for logistic-regression risk screening."
+    },
+    "body": {
+      "zh": [
+        "这项研究尝试用手表的光学脉搏和加速度信号，识别持续性高血压风险。方法是先通过自监督学习，从大量没有疾病标签的波形中学习特征；再把多个日子的特征汇总，用简单分类器判断风险，减少运动等短时噪声的影响。",
+        "值得了解的是：复杂模型负责提取特征，最终判断仍可以交给逻辑回归。研究者在 196 人的前瞻性研究中，报告初筛敏感度 65.8%、特异度 90%，意味着仍会漏掉部分病例；参与者也不包括服用降压药的人群。它展示了筛查潜力，尚不足以替代标准血压测量。"
+      ],
+      "en": [
+        "The study uses self-supervised learning on optical pulse and acceleration signals, then aggregates features across days for logistic-regression risk screening. In a prospective study of 196 participants, the authors report 65.8% sensitivity at 90% specificity for an initial hypertension screen. Multi-day aggregation reduces sensitivity to short-term motion noise."
+      ]
+    },
+    "limits": {
+      "zh": "排除服降压药人群，仍会漏检；研究不能替代标准血压测量。",
+      "en": "Participants taking antihypertensive medication were excluded. Missed cases remain, and the study does not establish a replacement for standard blood-pressure measurement."
+    },
+    "path": {
+      "zh": "How it works · Initial screening · Outlook",
+      "en": "How it works · Initial screening · Outlook"
+    }
+  },
+  {
+    "id": "cosmos3-world-simulation",
+    "issue": "2026-11-06",
+    "published": "2026-11-05",
+    "source": "NVIDIA",
+    "topic": "Robotics",
+    "minutes": 6,
+    "original": "New NVIDIA Cosmos 3 Open Models for Interactive World Simulation",
+    "url": "https://huggingface.co/blog/nvidia/cosmos-interactive-world-simulation",
+    "title": {
+      "zh": "世界模型怎样持续响应动作？",
+      "en": "New NVIDIA Cosmos 3 Open Models for Interactive World Simulation"
+    },
+    "intro": {
+      "zh": "文章介绍四个开放权重模型，分别面向驾驶场景、多传感器观测、模拟器画面和双臂机器人。",
+      "en": "Cosmos 3 models generate observations in chunks conditioned on actions and prior frames, supporting driving and robot-simulation settings."
+    },
+    "body": {
+      "zh": [
+        "文章介绍四个开放权重模型，分别面向驾驶场景、多传感器观测、模拟器画面和双臂机器人。重点是分段生成：模型根据动作和已有画面生成下一小段，再接受新的控制输入。",
+        "训练中有个关键问题：使用真实历史训练的模型，运行时却必须面对自己生成的历史，错误容易累积。团队先进行少步蒸馏以降低生成成本，再让模型用自己生成的历史继续训练，适应这种偏差。",
+        "值得注意其系统边界：部分方案仍由物理模拟器计算运动和接触，模型生成视觉观测。画面逼真程度，也不足以证明模拟环境能可靠评估真实机器人。"
+      ],
+      "en": [
+        "Cosmos 3 models generate observations in chunks conditioned on actions and prior frames, supporting driving and robot-simulation settings. Few-step distillation lowers generation cost, followed by training on self-generated history to address accumulated prediction error. The system is designed to accept new controls between generated segments."
+      ]
+    },
+    "limits": {
+      "zh": "部分方案仍靠物理模拟器计算接触和运动，画面逼真不等于物理可靠。",
+      "en": "Some configurations rely on a conventional simulator for motion and contact. Visual realism alone does not validate physical or robot-evaluation reliability."
+    },
+    "path": {
+      "zh": "Sim-Transfer · Sim-Bimanual · How streaming generation works",
+      "en": "Sim-Transfer · Sim-Bimanual · How streaming generation works"
+    }
+  },
+  {
+    "id": "usdb",
+    "issue": "2026-11-06",
+    "published": "2026-11-02",
+    "source": "ByteDance · Nanyang Technological University",
+    "topic": "Infrastructure",
+    "minutes": 6,
+    "original": "USDB: Scaling Storage for Next-Generation Recommender Systems at ByteDance",
+    "url": "https://arxiv.org/html/2611.02618v1",
+    "title": {
+      "zh": "推荐模型变大，数据系统也要一起改变",
+      "en": "USDB: Scaling Storage for Next-Generation Recommender Systems at ByteDance"
+    },
+    "intro": {
+      "zh": "推荐模型开始读取更长的用户行为历史，带来两种冲突：持续写入少量新行为，同时反复读取大量历史。",
+      "en": "USDB addresses continual small writes and repeated large historical reads in recommendation systems with background aggregation, shared storage, and column-selective access."
+    },
+    "body": {
+      "zh": [
+        "推荐模型开始读取更长的用户行为历史，带来两种冲突：持续写入少量新行为，同时反复读取大量历史。USDB 通过后台聚合、共享存储和按需读取特征列，减少重复处理。",
+        "更值得读的是训练数据的时间边界：某个行为虽然早已发生，却可能很晚才到达系统。重建训练样本时，如果只按事件时间筛选，就会加入模型当时根本没看到的信息。论文用版本信息保留“当时可见的数据”，避免信息泄漏。"
+      ],
+      "en": [
+        "USDB addresses continual small writes and repeated large historical reads in recommendation systems with background aggregation, shared storage, and column-selective access. Versioning reconstructs what data was actually visible at a historical prediction time, preventing late-arriving events from leaking into training examples. The authors report 42.1% lower infrastructure cost under their deployment accounting."
+      ]
+    },
+    "limits": {
+      "zh": "系统成本收益不等于推荐质量提升，取决于部署负载与核算口径。",
+      "en": "Infrastructure savings do not imply a corresponding recommendation-quality gain and depend on workload and accounting assumptions."
+    },
+    "path": {
+      "zh": "Introduction · §4.4 · §5.8",
+      "en": "Introduction · §4.4 · §5.8"
+    }
+  },
+  {
+    "id": "tactile-trex",
+    "issue": "2026-11-05",
+    "published": "2026-06-15",
+    "source": "UC Berkeley · NVIDIA · Stanford · collaborators",
+    "topic": "Robotics",
+    "minutes": 7,
+    "original": "T-Rex: Tactile-Reactive Dexterous Manipulation",
+    "url": "https://tactile-reactive-dexterous.github.io/",
+    "title": {
+      "zh": "机器人怎样做到“看得慢一点，触觉反应快一点”？",
+      "en": "T-Rex: Tactile-Reactive Dexterous Manipulation"
+    },
+    "intro": {
+      "zh": "拿鸡蛋、翻书、拔出卡片，都需要接触后及时调整力度。",
+      "en": "T-Rex combines visual-language action planning at roughly 5 Hz with tactile corrections at about 20 Hz, reusing visual computation between contact updates."
+    },
+    "body": {
+      "zh": [
+        "拿鸡蛋、翻书、拔出卡片，都需要接触后及时调整力度。T-Rex 将视觉与语言驱动的整体动作规划，和更高频的触觉修正结合：前者约每秒更新五次，后者约二十次，修正时复用已有视觉计算。",
+        "值得了解的是：不同感知信号可以按不同频率进入控制回路，不必每次接触变化都重新运行整套视觉模型。研究还结合人类视频预训练与一百小时触觉同步机器人数据。",
+        "作者报告十二项任务平均成功率为 65%，最强基线为 35%。局限包括任务与硬件范围有限、传感器校准漂移，以及复杂长任务中仍会滑落、碰撞或放置不准。"
+      ],
+      "en": [
+        "T-Rex combines visual-language action planning at roughly 5 Hz with tactile corrections at about 20 Hz, reusing visual computation between contact updates. It combines human-video pretraining with one hundred hours of tactile-synchronized robot data. The authors report 65% average success on twelve tasks, versus 35% for the strongest baseline."
+      ]
+    },
+    "limits": {
+      "zh": "任务硬件有限，校准漂移及长任务失败仍存在；十一月介绍并非论文首次发布。",
+      "en": "Tasks and hardware are limited; calibration drift and long-task failures remain. The November announcement is distinct from the paper’s June submission."
+    },
+    "path": {
+      "zh": "Architecture · Ablations · Failure cases",
+      "en": "Architecture · Ablations · Failure cases"
+    }
+  },
+  {
+    "id": "phonon-tts",
+    "issue": "2026-11-05",
+    "published": "2026-11-05",
+    "source": "Gradium · Hugging Face contributors",
+    "topic": "Multimodal",
+    "minutes": 5,
+    "original": "A Closer Look at Phonon TTS. Launching High-Quality On-Device Speech That Tops the Benchmarks.",
+    "url": "https://huggingface.co/blog/phonon-tts",
+    "title": {
+      "zh": "很小的模型，如何在设备上开口说话？",
+      "en": "A Closer Look at Phonon TTS. Launching High-Quality On-Device Speech That Tops the Benchmarks."
+    },
+    "intro": {
+      "zh": "Phonon 延续 Pocket TTS 路线，逐步生成压缩的音频表示，再解码成声音。",
+      "en": "Phonon follows the Pocket TTS approach, generating compressed audio representations before decoding speech."
+    },
+    "body": {
+      "zh": [
+        "Phonon 延续 Pocket TTS 路线，逐步生成压缩的音频表示，再解码成声音。可以把音频编解码器理解为：为语音生成提供模型能够处理的表示，作用类似文本系统里的分词器。",
+        "文章还区分两种执行目标：设备上的单路实时播放，以及 GPU 上的批量生成。模型大小、首段声音延迟和批量吞吐，是不同的优化指标。",
+        "团队报告其在部分语言与 CPU 流式测试中表现突出，但榜单结果不能代表所有设备、口音和长文本表现。当前小版本支持英语，多语言版本覆盖五种语言；各版本许可也不同。"
+      ],
+      "en": [
+        "Phonon follows the Pocket TTS approach, generating compressed audio representations before decoding speech. The article distinguishes single-stream playback on a device from batched GPU generation, showing why model size, first-audio latency, and aggregate throughput are different optimization targets. Smaller and multilingual variants support different language sets."
+      ]
+    },
+    "limits": {
+      "zh": "设备口音长文本效果不能由部分榜单推定；不同版本许可也不同。",
+      "en": "Selected benchmarks do not establish performance across devices, accents, and long texts. Licenses differ between variants."
+    },
+    "path": {
+      "zh": "Model overview · Benchmark metrics · Inference",
+      "en": "Model overview · Benchmark metrics · Inference"
+    }
+  },
+  {
+    "id": "paths-to-root",
+    "issue": "2026-11-05",
+    "published": "2026-11-04",
+    "source": "OpenAI",
+    "topic": "Safety",
+    "minutes": 6,
+    "original": "A thousand fewer paths to root",
+    "url": "https://openai.com/index/a-thousand-fewer-paths-to-root/",
+    "title": {
+      "zh": "得到成功结果，还要核查成功的原因",
+      "en": "A thousand fewer paths to root"
+    },
+    "intro": {
+      "zh": "OpenAI 介绍了一套从漏洞候选发现、隔离环境复现，到候选补丁生成与人工审核的流程，并报告在受控 Linux 环境中验证了大量问题。",
+      "en": "The article describes finding candidate vulnerabilities, reproducing them in isolated Linux environments, and proposing patches for human review."
+    },
+    "body": {
+      "zh": [
+        "OpenAI 介绍了一套从漏洞候选发现、隔离环境复现，到候选补丁生成与人工审核的流程，并报告在受控 Linux 环境中验证了大量问题。",
+        "最值得关注的是验证方法：早期部分任务虽然成功取得目标权限，实际却利用了另一处漏洞，团队因此增加独立检查。结果达标，并不自动证明任务沿预期路径完成。",
+        "文章也承认，初始补丁可能遗漏变体、增加不必要代码或引入性能取舍。报告中的发现数量与候选补丁，不能直接理解为同等数量的问题已经全部修复上线。"
+      ],
+      "en": [
+        "The article describes finding candidate vulnerabilities, reproducing them in isolated Linux environments, and proposing patches for human review. Some early attempts reached the target privilege through a different vulnerability than intended, prompting independent path validation. The case shows why attaining an outcome does not by itself verify the expected causal route."
+      ]
+    },
+    "limits": {
+      "zh": "候选补丁可能漏变体或引入性能取舍，发现数量不代表全部修复上线。",
+      "en": "Candidate patches can miss variants or introduce complexity and performance tradeoffs. Reported findings are not equivalent to deployed fixes."
+    },
+    "path": {
+      "zh": "Human review · Path validation · Patch iteration",
+      "en": "Human review · Path validation · Patch iteration"
+    }
+  },
+  {
+    "id": "statebench",
+    "issue": "2026-11-04",
+    "published": "2026-11-03",
+    "source": "Allen Institute for AI",
+    "topic": "Evaluation",
+    "minutes": 7,
+    "original": "StateBench: Testing how language models track state changes over long documents",
+    "url": "https://huggingface.co/blog/allenai/statebench",
+    "title": {
+      "zh": "记住一条信息，与跟踪它怎样变化，是两种能力",
+      "en": "StateBench: Testing how language models track state changes over long documents"
+    },
+    "intro": {
+      "zh": "“找到某人的出生日期”只需定位固定信息；“某件物品被多次转交后在谁手里”，则需要连续更新状态。",
+      "en": "StateBench distinguishes retrieving a fixed value from tracking overwrites, accumulated updates, and dependencies across variables."
+    },
+    "body": {
+      "zh": [
+        "“找到某人的出生日期”只需定位固定信息；“某件物品被多次转交后在谁手里”，则需要连续更新状态。StateBench 将这些任务按难度分层，区分固定赋值、覆盖旧值、累积更新和跨变量依赖。",
+        "作者发现，部分循环与混合架构经过专门训练后，能向更长序列泛化；但预训练模型并不会自动获得这种能力，题目换一种表达格式，成绩也可能明显变化。",
+        "值得了解的是：上下文窗口长度，只说明能容纳多少输入；状态跟踪还取决于训练和计算机制。 局限是测试使用固定数量的变量，尚未覆盖真实对话中不断出现新人物、新对象的情况。"
+      ],
+      "en": [
+        "StateBench distinguishes retrieving a fixed value from tracking overwrites, accumulated updates, and dependencies across variables. Some recurrent and hybrid architectures trained for the task generalize to longer sequences, but pretrained models do not acquire this automatically and scores can shift when input formatting changes. Context capacity and state-tracking ability need separate measurement."
+      ]
+    },
+    "limits": {
+      "zh": "变量数固定，未覆盖真实对话中持续出现新对象的情况。",
+      "en": "Tasks use a fixed number of variables rather than the continual introduction of new entities found in real conversations."
+    },
+    "path": {
+      "zh": "Task hierarchy · Direct-training experiments · Open questions",
+      "en": "Task hierarchy · Direct-training experiments · Open questions"
+    }
+  },
+  {
+    "id": "agentic-cheminformatics",
+    "issue": "2026-11-04",
+    "published": "2026-11-03",
+    "source": "Google DeepMind",
+    "topic": "Science",
+    "minutes": 6,
+    "original": "Agentic cheminformatics with Google Antigravity",
+    "url": "https://deepmind.google/blog/agentic-cheminformatics-with-google-antigravity/",
+    "title": {
+      "zh": "语言模型与化学工具怎样分工？",
+      "en": "Agentic cheminformatics with Google Antigravity"
+    },
+    "intro": {
+      "zh": "同一个分子可能以名称、结构图片或数据文件出现，科学家需要先统一表示，再关联实验数据。",
+      "en": "The workflow combines literature retrieval, compound standardization, analysis tools, and predictive modeling."
+    },
+    "body": {
+      "zh": [
+        "同一个分子可能以名称、结构图片或数据文件出现，科学家需要先统一表示，再关联实验数据。文章展示了一个工作流：模型检索文献、整理化合物、调用分析工具，并协助构建预测模型。",
+        "核心设计是：语言模型组织流程，RDKit 等确定性工具执行分子计算。 评估时还考虑按时间或分子骨架划分数据，检查预测能力能否迁移到较陌生的化合物。",
+        "这是一份技术演示。作者称流程可在约一小时内提出设计假设，但数据稀疏、实验室间测量差异都会限制预测精度；候选设计仍需实验验证。"
+      ],
+      "en": [
+        "The workflow combines literature retrieval, compound standardization, analysis tools, and predictive modeling. Language models organize the process while deterministic chemistry software such as RDKit performs molecular calculations. Time-based and scaffold-based splits test whether predictions extend beyond familiar compounds. The article reports generating design hypotheses in about an hour."
+      ]
+    },
+    "limits": {
+      "zh": "技术演示仍受稀疏数据与实验室差异限制，候选分子需实验验证。",
+      "en": "This is a technical demonstration constrained by sparse data and cross-laboratory measurement differences. Proposed designs need experimental validation."
+    },
+    "path": {
+      "zh": "Tool roles · Data splits · Limitations",
+      "en": "Tool roles · Data splits · Limitations"
+    }
+  },
+  {
+    "id": "mopd-trl",
+    "issue": "2026-11-04",
+    "published": "2026-11-03",
+    "source": "Sergio Paniego · Hugging Face",
+    "topic": "Training",
+    "minutes": 5,
+    "original": "MOPD: how frontier labs merge RL experts into one model and how to do it using TRL",
+    "url": "https://huggingface.co/blog/sergiopaniego/mopd-trl",
+    "title": {
+      "zh": "让一个学生向多位专家学习",
+      "en": "MOPD: how frontier labs merge RL experts into one model and how to do it using TRL"
+    },
+    "intro": {
+      "zh": "MOPD 先分别训练数学、代码等领域的专家，再让学生模型自己生成回答，由对应专家提供逐词元的概率反馈。",
+      "en": "Multi-teacher on-policy distillation trains specialists separately, then lets a student generate trajectories and receive token-level feedback from the relevant expert."
+    },
+    "body": {
+      "zh": [
+        "MOPD 先分别训练数学、代码等领域的专家，再让学生模型自己生成回答，由对应专家提供逐词元的概率反馈。“On-policy”强调学生从自己的生成轨迹中学习，这样也能接触自己容易走偏的位置。",
+        "一个很实用的细节是：题目比例不等于训练贡献。数学回答很长，可能占据多数训练词元，让短回答领域得到的学习信号过少。",
+        "文章提供了 TRL 实现和短实验，但只有 60 个训练步骤，不能据此判断完整训练收益；专家质量、反馈形式与领域平衡仍需验证。"
+      ],
+      "en": [
+        "Multi-teacher on-policy distillation trains specialists separately, then lets a student generate trajectories and receive token-level feedback from the relevant expert. The article’s TRL example highlights that task proportions are not token proportions: long mathematical answers can dominate the training signal over shorter tasks."
+      ]
+    },
+    "limits": {
+      "zh": "署名技术解读和实现示例仅六十步，不能据此判断完整训练收益。",
+      "en": "This is an attributed explanation and implementation example with only sixty training steps, not evidence of full-run training gains."
+    },
+    "path": {
+      "zh": "Method overview · Watching the token imbalance",
+      "en": "Method overview · Watching the token imbalance"
+    }
+  },
+  {
+    "id": "model-integration-contracts",
+    "issue": "2026-11-03",
+    "published": "2026-11-03",
+    "source": "Hugging Face · Tarek Ziadé",
+    "topic": "Infrastructure",
+    "minutes": 6,
+    "original": "Transformers Model Integration Contracts",
+    "url": "https://huggingface.co/blog/transformers-mic",
+    "title": {
+      "zh": "模型能正常运行，也可能悄悄算错",
+      "en": "Transformers Model Integration Contracts"
+    },
+    "intro": {
+      "zh": "文章从一个真实回归讲起：注意力实现变化后，UMT5 解码器能看到未来词元，训练时相当于提前偷看答案，但程序没有崩溃。",
+      "en": "A UMT5 attention regression allowed a decoder to see future tokens without crashing."
+    },
+    "body": {
+      "zh": [
+        "文章从一个真实回归讲起：注意力实现变化后，UMT5 解码器能看到未来词元，训练时相当于提前偷看答案，但程序没有崩溃。",
+        "团队提出 MIC：缩小模型，同时保留关键层类型、分词器和处理器，再检查固定使用流程的输出、损失与梯度。 这样可以在 CPU 上快速发现部分回归。关键在于保留真实执行路径；该案例只测另一种注意力实现，就会漏掉问题。",
+        "值得了解的是，AI 基础设施需要检查计算语义，而不只是“加载成功”。局限是小模型仍会漏掉依赖真实权重才出现的错误，实际误报率与覆盖范围也尚待验证。"
+      ],
+      "en": [
+        "A UMT5 attention regression allowed a decoder to see future tokens without crashing. Model Integration Contracts shrink models while preserving key layer types, tokenizers, and processors, then check outputs, losses, and gradients on fixed execution paths. Small CPU tests can catch semantic regressions only if they exercise the affected attention implementation."
+      ]
+    },
+    "limits": {
+      "zh": "小模型可能漏掉依赖真实权重的问题；覆盖范围和误报率尚待验证。",
+      "en": "Small models can miss weight-dependent failures. Overall coverage and false-positive rates remain to be established."
+    },
+    "path": {
+      "zh": "UMT5 regression · Model shrinking · Open questions",
+      "en": "UMT5 regression · Model shrinking · Open questions"
+    }
+  },
+  {
+    "id": "quantized-coding-agents",
+    "issue": "2026-11-03",
+    "published": "2026-11-02",
+    "source": "Areej Mehboob · collaborators",
+    "topic": "Evaluation",
+    "minutes": 6,
+    "original": "Beyond Accuracy: How Quantization Affects Coding Agents",
+    "url": "https://arxiv.org/html/2611.02368v1",
+    "title": {
+      "zh": "量化之后，最终成绩接近，解题过程却可能改变",
+      "en": "Beyond Accuracy: How Quantization Affects Coding Agents"
+    },
+    "intro": {
+      "zh": "量化用更少位数表示权重，降低模型存储需求。",
+      "en": "The paper compares BF16 with two four-bit quantization methods in a coding-agent loop that runs Python, reads feedback, and revises solutions."
+    },
+    "body": {
+      "zh": [
+        "量化用更少位数表示权重，降低模型存储需求。这篇研究比较 BF16 与两种四位量化方法，让模型在编程竞赛题上运行代码、查看反馈并修改答案。",
+        "作者没有检测到统计显著的最终准确率损失，却发现一次完成、反复调用工具以及失败类型的分布发生变化。例如，部分小模型量化后更依赖迭代修正。",
+        "这提醒我们，评估 Agent 压缩方案还应观察过程与工具使用。局限是实验只覆盖一个基准、一套执行反馈框架和 Python；“未检测到显著差异”也不足以证明完全无损。端到端延迟与内存收益仍需另测。"
+      ],
+      "en": [
+        "The paper compares BF16 with two four-bit quantization methods in a coding-agent loop that runs Python, reads feedback, and revises solutions. It detects no statistically significant final-accuracy loss, but finds changes in one-shot completion, tool-use patterns, and failure types. Some smaller quantized models rely more on iterative correction."
+      ]
+    },
+    "limits": {
+      "zh": "只测单一基准框架与 Python，未显著下降不等于完全无损，速度内存需另测。",
+      "en": "One benchmark, harness, and language are tested. A nonsignificant difference does not prove equivalence; latency and memory gains need separate measurement."
+    },
+    "path": {
+      "zh": "§4 behavior analysis · Limitations",
+      "en": "§4 behavior analysis · Limitations"
+    }
+  },
+  {
+    "id": "qwen-image2",
+    "issue": "2026-11-03",
+    "published": "2026-05-11",
+    "source": "Qwen",
+    "topic": "Generation",
+    "minutes": 6,
+    "original": "Qwen-Image-2.0 Technical Report",
+    "url": "https://arxiv.org/html/2605.10730v1",
+    "title": {
+      "zh": "生图中的文字与布局能力，怎样训练出来？",
+      "en": "Qwen-Image-2.0 Technical Report"
+    },
+    "intro": {
+      "zh": "报告将训练标注细分为普通描述、密集文字、背景知识和结构化关系。",
+      "en": "Qwen-Image-2.0’s report separates ordinary captions, dense text, background knowledge, and structured relationships in its training annotations."
+    },
+    "body": {
+      "zh": [
+        "报告将训练标注细分为普通描述、密集文字、背景知识和结构化关系。对海报、流程图等内容，标注会明确文字、布局、实体及其关系，给模型更细的学习信号。",
+        "它还训练提示词增强器，把简略需求扩展成更明确的视觉描述；随后通过少步蒸馏，尝试减少生成所需的计算步骤。值得认识的是：视觉能力来自数据、条件表达、训练与推理优化的共同作用。",
+        "作者展示了四次函数求值的学生模型与四十步教师模型的视觉对比，但主要是定性证据，不能据此保证所有长文本、复杂布局和编辑任务都保持同等质量。"
+      ],
+      "en": [
+        "Qwen-Image-2.0’s report separates ordinary captions, dense text, background knowledge, and structured relationships in its training annotations. It also trains a prompt enhancer and uses few-step distillation. These choices connect typography and layout capability to data representation, conditioning, and inference optimization."
+      ]
+    },
+    "limits": {
+      "zh": "四次函数求值与四十步教师的对比主要为定性证据，不能保证各任务等质。",
+      "en": "The four-evaluation student versus forty-step teacher comparison is mainly qualitative and does not establish equal quality across complex layouts or editing tasks."
+    },
+    "path": {
+      "zh": "§2.2 · §3.3 · §4.3",
+      "en": "§2.2 · §3.3 · §4.3"
+    }
+  },
+  {
+    "id": "tracing-model-thoughts",
+    "issue": "2026-11-02",
+    "published": "2025-03-27",
+    "source": "Anthropic",
+    "topic": "Architecture",
+    "minutes": 7,
+    "original": "Tracing the thoughts of a large language model",
+    "url": "https://www.anthropic.com/research/tracing-thoughts-language-model",
+    "title": {
+      "zh": "模型说出的推理，是否对应内部计算？",
+      "en": "Tracing the thoughts of a large language model"
+    },
+    "intro": {
+      "zh": "研究者尝试把模型内部可解释的“特征”连接成计算路径，并通过干预这些特征，观察输出怎样变化。",
+      "en": "Anthropic connects interpretable internal features into computational pathways and intervenes on them to test output changes."
+    },
+    "body": {
+      "zh": [
+        "研究者尝试把模型内部可解释的“特征”连接成计算路径，并通过干预这些特征，观察输出怎样变化。例如，在押韵任务中，模型写下一行之前，就出现了与结尾韵脚有关的活动；改变相关特征，也会改变它选择的结尾。",
+        "另一组案例显示，模型给出的数学解释可能与内部计算路径不同。值得了解的是：理解模型行为，需要把口头解释与内部机制分别检验。",
+        "局限也很明确：方法只能捕捉部分计算，分析短提示仍需数小时人工工作，工具本身可能引入假象。这还远不是完整的“读心术”。"
+      ],
+      "en": [
+        "Anthropic connects interpretable internal features into computational pathways and intervenes on them to test output changes. Rhyme-related activity can precede the line being written, while mathematical explanations sometimes diverge from the observed internal route. The work separates a model’s verbal account from evidence about its computation."
+      ]
+    },
+    "limits": {
+      "zh": "只捕捉部分计算，短提示分析仍需数小时人工，方法也可能引入假象。",
+      "en": "The method captures only part of the computation, needs hours of manual analysis for short prompts, and can introduce artifacts."
+    },
+    "path": {
+      "zh": "Rhyme planning · Reasoning faithfulness · Method limitations",
+      "en": "Rhyme planning · Reasoning faithfulness · Method limitations"
+    }
+  },
+  {
+    "id": "muon-scalability",
+    "issue": "2026-11-02",
+    "published": "2025-02-24",
+    "source": "Moonshot AI · collaborators",
+    "topic": "Training",
+    "minutes": 5,
+    "original": "Muon is Scalable for LLM Training",
+    "url": "https://arxiv.org/html/2502.16982v1",
+    "title": {
+      "zh": "改变参数更新方式，也能改变计算需求",
+      "en": "Muon is Scalable for LLM Training"
+    },
+    "intro": {
+      "zh": "优化器决定模型怎样根据误差更新参数。",
+      "en": "Muon adjusts updates using the matrix structure of model weights."
+    },
+    "body": {
+      "zh": [
+        "优化器决定模型怎样根据误差更新参数。Muon 利用权重矩阵的整体结构调整更新方向；这项工作通过加入权重衰减、校准更新尺度，以及分布式实现，将它用于更大模型的训练。",
+        "作者在计算量最优的缩放实验中报告：达到相近性能时，Muon 约需 AdamW 52% 的训练 FLOPs。这提醒我们，训练效率也取决于优化算法。"
+      ],
+      "en": [
+        "Muon adjusts updates using the matrix structure of model weights. The paper scales it through weight decay, update-scale calibration, and distributed implementation. In compute-optimal scaling experiments, the authors report approximately 52% of AdamW’s training FLOPs for comparable performance, illustrating the role of optimizer design in efficiency."
+      ]
+    },
+    "limits": {
+      "zh": "FLOPs 减少不等于耗时减半；预训练与微调间换优化器可能导致退步。",
+      "en": "FLOP savings do not imply halved runtime. Switching optimizers between pretraining and fine-tuning can hurt performance."
+    },
+    "path": {
+      "zh": "Method overview · Discussion",
+      "en": "Method overview · Discussion"
+    }
+  },
+  {
+    "id": "cursor-regex-index",
+    "issue": "2026-11-02",
+    "published": "2026-03-23",
+    "source": "Cursor · Vicent Marti",
+    "topic": "Retrieval",
+    "minutes": 6,
+    "original": "Fast regex search: indexing text for agent tools",
+    "url": "https://cursor.com/blog/fast-regex-search",
+    "title": {
+      "zh": "为什么代码搜索仍值得专门设计？",
+      "en": "Fast regex search: indexing text for agent tools"
+    },
+    "intro": {
+      "zh": "即使正则匹配很快，搜索大型代码库仍可能耗时，因为需要读取大量文件。",
+      "en": "Fast regular-expression matching still requires reading many files without an index."
+    },
+    "body": {
+      "zh": [
+        "即使正则匹配很快，搜索大型代码库仍可能耗时，因为需要读取大量文件。文章介绍怎样用字符片段的倒排索引先筛出候选文件，再进行精确匹配；随后讨论稀疏 n-gram，减少查询时需要读取的索引列表。",
+        "值得了解的是：工具获取上下文的速度，也会影响 Agent 的整体表现。 文章中的交互演示很适合理解索引如何缩小搜索范围。",
+        "局限是索引需要构建、存储和维护，候选结果仍需验证；具体收益取决于代码库和查询，不能把示例中的加速直接套用到所有任务。"
+      ],
+      "en": [
+        "Fast regular-expression matching still requires reading many files without an index. Cursor describes using character-fragment inverted indexes to select candidate files before exact matching, then sparse n-grams to reduce index-list reads. The article’s interactive examples show how retrieval reduces the amount of code an agent tool must inspect."
+      ]
+    },
+    "limits": {
+      "zh": "索引有构建存储维护成本，候选仍需验证，收益依赖代码库和查询。",
+      "en": "Indexes cost time and storage to build and maintain. Candidates require verification, and gains depend on the repository and query."
+    },
+    "path": {
+      "zh": "Introduction · Sparse n-grams · Local indexing",
+      "en": "Introduction · Sparse n-grams · Local indexing"
+    }
+  },
+  {
+    "id": "evo2-in-context",
+    "issue": "2026-11-01",
+    "published": "2026-10-29",
+    "source": "Arc Institute · Stanford",
+    "topic": "Science",
+    "minutes": 7,
+    "original": "Evo 2 uses in-context learning to design de novo regulatory sequences with only tens of examples",
+    "url": "https://arcinstitute.org/news/evo-2-in-context-learning",
+    "title": {
+      "zh": "基因组模型也能从上下文中的几个例子学习",
+      "en": "Evo 2 uses in-context learning to design de novo regulatory sequences with only tens of examples"
+    },
+    "intro": {
+      "zh": "语言模型看几个示例后就能模仿任务格式；研究者发现，读取 DNA 的 Evo 2 也能利用这种“上下文学习”：给它少量同类序列，便能引导生成具有相应调控功能的候选序列，无需为每项任务重新微调。",
+      "en": "Evo 2 uses small sets of related DNA sequences as context to guide generation of regulatory-sequence candidates without task-specific fine-tuning."
+    },
+    "body": {
+      "zh": [
+        "语言模型看几个示例后就能模仿任务格式；研究者发现，读取 DNA 的 Evo 2 也能利用这种“上下文学习”：给它少量同类序列，便能引导生成具有相应调控功能的候选序列，无需为每项任务重新微调。",
+        "研究还通过移除部分注意力模块，探查哪些内部机制支持这种能力。值得了解的是，少样本学习可能跨越自然语言，出现在其他序列领域。",
+        "作者报告，九个接受小鼠实验检验的增强子设计中，七个产生可检测表达。但这是有限实验；其他类别的设计目前主要得到计算预测支持，相关论文仍是预印本。"
+      ],
+      "en": [
+        "Evo 2 uses small sets of related DNA sequences as context to guide generation of regulatory-sequence candidates without task-specific fine-tuning. Module ablations probe mechanisms supporting this ability. The authors report detectable expression for seven of nine enhancer designs tested in mice, illustrating in-context learning beyond natural language."
+      ]
+    },
+    "limits": {
+      "zh": "小鼠验证规模有限，其他设计主要为计算预测，论文仍属预印本。",
+      "en": "Animal validation is small, other design classes mainly have computational support, and the associated paper is a preprint."
+    },
+    "path": {
+      "zh": "In-context learning · Experimental validation",
+      "en": "In-context learning · Experimental validation"
+    }
+  },
+  {
+    "id": "deepseek-engram",
+    "issue": "2026-11-01",
+    "published": "2026-01-12",
+    "source": "DeepSeek · Peking University",
+    "topic": "Memory",
+    "minutes": 6,
+    "original": "Conditional Memory via Scalable Lookup: A New Axis of Sparsity for Large Language Models",
+    "url": "https://arxiv.org/html/2601.07372v1",
+    "title": {
+      "zh": "让模型把一部分知识变成“查表”",
+      "en": "Conditional Memory via Scalable Lookup: A New Axis of Sparsity for Large Language Models"
+    },
+    "intro": {
+      "zh": "Engram 根据相邻词元组合，从训练得到的参数表中检索向量，再由当前上下文决定吸收多少信息。",
+      "en": "Engram retrieves learned vectors from tables keyed by neighboring tokens, then gates them using the current context."
+    },
+    "body": {
+      "zh": [
+        "Engram 根据相邻词元组合，从训练得到的参数表中检索向量，再由当前上下文决定吸收多少信息。直观理解是：熟悉的局部模式可以快速查取，为其他计算留下更多空间。",
+        "作者在总参数和计算量匹配的实验中，观察到知识、推理和代码任务的改善。由于查表位置能提前确定，系统还可以预取 CPU 内存中的数据，尝试隐藏传输延迟。",
+        "局限也很具体：哈希碰撞和一词多义可能引入噪声，需要门控机制处理；实际速度收益依赖内存带宽和模块位置，不能只看理论计算量。"
+      ],
+      "en": [
+        "Engram retrieves learned vectors from tables keyed by neighboring tokens, then gates them using the current context. Matched-parameter and matched-compute experiments report gains on knowledge, reasoning, and code tasks. Because lookup addresses can be computed early, tables can be prefetched from CPU memory to overlap transfer with computation."
+      ]
+    },
+    "limits": {
+      "zh": "哈希冲突和多义性需门控处理，实际收益依赖带宽和模块位置。",
+      "en": "Hash collisions and ambiguity require gating. Practical speed depends on memory bandwidth and module placement."
+    },
+    "path": {
+      "zh": "§2 architecture · §4 comparisons",
+      "en": "§2 architecture · §4 comparisons"
+    }
+  },
+  {
+    "id": "nemotron-haunted-house",
+    "issue": "2026-11-01",
+    "published": "2026-10-30",
+    "source": "NVIDIA · Rick Grandy · Maryam Motamedi",
+    "topic": "Multimodal",
+    "minutes": 5,
+    "original": "Building a Haunted House with NVIDIA Nemotron Open Models",
+    "url": "https://huggingface.co/blog/nvidia/nemotron-halloween",
+    "title": {
+      "zh": "一座会和访客拌嘴的万圣节房子",
+      "en": "Building a Haunted House with NVIDIA Nemotron Open Models"
+    },
+    "intro": {
+      "zh": "作者把车库门变成能听、说、做口型的角色：语音识别负责听，小语言模型负责回答，语音合成与动画模块负责表演；视觉模型描述服装，另用轻量模型追踪人数。",
+      "en": "This Halloween project connects speech recognition, a small language model, speech synthesis, animation, and visual clothing descriptions."
+    },
+    "body": {
+      "zh": [
+        "作者把车库门变成能听、说、做口型的角色：语音识别负责听，小语言模型负责回答，语音合成与动画模块负责表演；视觉模型描述服装，另用轻量模型追踪人数。",
+        "有价值的细节是：角色性格由提示词和 LoRA 塑造，“访客是否已经说过请”这样的持续状态保存在应用逻辑中；常见台词预先生成，降低等待时间，还有人工接管模式。",
+        "这是完整系统的搭建记录，尚非可靠性证明。作者明确说，合成访客测试不能代表真实夜间表现，完整项目代码也未打包发布。"
+      ],
+      "en": [
+        "This Halloween project connects speech recognition, a small language model, speech synthesis, animation, and visual clothing descriptions. Prompts and LoRA shape the character, while application logic stores persistent interaction state. Pre-generated common lines reduce waiting, and a human takeover mode remains available."
+      ]
+    },
+    "limits": {
+      "zh": "搭建记录并非可靠性证明，合成访客不代表真实夜间表现，完整代码未打包。",
+      "en": "This is a build account, not a reliability study. Synthetic visitors do not establish real-night performance, and a complete code package was not released."
+    },
+    "path": {
+      "zh": "System pipeline · Console · Lessons",
+      "en": "System pipeline · Console · Lessons"
+    }
+  },
+  {
+    "id": "unified-training",
+    "issue": "2026-10-31",
+    "published": "2026-10-29",
+    "source": "Carnegie Mellon · Johns Hopkins · Aurora Innovation",
+    "topic": "Training",
+    "minutes": 7,
+    "original": "Training Foundation Models with a Single Algorithm",
+    "url": "https://yudasong.github.io/unified-training/",
+    "title": {
+      "zh": "预训练、微调和强化学习，可以共用一种算法吗？",
+      "en": "Training Foundation Models with a Single Algorithm"
+    },
+    "intro": {
+      "zh": "传统训练通常分阶段：先读大量文本，再学习示范，最后根据奖励改进。",
+      "en": "The authors express parts of reinforcement learning as fitting a distribution of successful responses, allowing corpus text, demonstrations, and generated experience to share a weighted-likelihood objective."
+    },
+    "body": {
+      "zh": [
+        "传统训练通常分阶段：先读大量文本，再学习示范，最后根据奖励改进。作者提出，将部分强化学习目标改写为对“成功回答分布”的拟合，让静态语料、示范和模型生成的数据共用加权似然损失。",
+        "这样，核心问题变成：什么时候学习哪种数据，各占多少比例？ 作者在实验中发现，混合训练能减轻遗忘；有些模型当前成绩稍低，继续学习后的成绩反而更好。",
+        "局限： 主要实验使用 124M 和 0.76B 参数模型，尚未建立大模型上的规模规律；不同数据比例也存在准确率与能力保留的取舍。它提供了统一视角，还没有找到万能配方。"
+      ],
+      "en": [
+        "The authors express parts of reinforcement learning as fitting a distribution of successful responses, allowing corpus text, demonstrations, and generated experience to share a weighted-likelihood objective. Experiments suggest mixed training can reduce forgetting, making data scheduling and composition central design choices."
+      ]
+    },
+    "limits": {
+      "zh": "主要模型为 124M 与 0.76B，未建立大模型规律，也未找到通用配比。",
+      "en": "Main experiments use 124M and 0.76B models. Large-model scaling and a universally effective data mixture are not established."
+    },
+    "path": {
+      "zh": "§1 · §5 · §8",
+      "en": "§1 · §5 · §8"
+    }
+  },
+  {
+    "id": "synthetic-enterprise-evals",
+    "issue": "2026-10-31",
+    "published": "2026-10-30",
+    "source": "Microsoft Research",
+    "topic": "Evaluation",
+    "minutes": 5,
+    "original": "From synthetic enterprise data evaluations to real Microsoft Copilot AI confidence",
+    "url": "https://www.microsoft.com/en-us/research/blog/from-synthetic-enterprise-data-evaluations-to-real-microsoft-copilot-ai-confidence/",
+    "title": {
+      "zh": "评测 AI，需要生成一个有历史的组织",
+      "en": "From synthetic enterprise data evaluations to real Microsoft Copilot AI confidence"
+    },
+    "intro": {
+      "zh": "为了测试会议总结、跨文档检索等能力，微软生成了虚构公司的员工、邮件、会议和项目时间线，并用公开职业资料、招聘信息及公司披露校准组织结构。",
+      "en": "Microsoft generates synthetic organizations with employees, emails, meetings, and evolving project histories to evaluate workplace assistance."
+    },
+    "body": {
+      "zh": [
+        "为了测试会议总结、跨文档检索等能力，微软生成了虚构公司的员工、邮件、会议和项目时间线，并用公开职业资料、招聘信息及公司披露校准组织结构。",
+        "值得了解的是：逼真的句子还不够，数据之间也需要一致的关系和时间顺序。 “上周决定了什么”只有放进持续演变的环境里，才是有意义的测试。",
+        "作者报告合成数据质量指标提高 39%，但这是内部环境质量指标，不能解释成 Copilot 准确率提高了 39%。需要注意，合成环境也可能遗漏设计者没想到的现实混乱，仍需验证其代表性。"
+      ],
+      "en": [
+        "Microsoft generates synthetic organizations with employees, emails, meetings, and evolving project histories to evaluate workplace assistance. Public professional and company information helps calibrate organization structure. Consistent relationships and timelines make questions about previous decisions meaningful. The reported 39% gain concerns an internal synthetic-data quality metric."
+      ]
+    },
+    "limits": {
+      "zh": "39% 不是 Copilot 准确率提升；合成环境仍可能遗漏现实混乱。",
+      "en": "The 39% figure is not a Copilot accuracy gain. Synthetic environments may omit unanticipated real-world complexity."
+    },
+    "path": {
+      "zh": "Environment construction · Quality validation",
+      "en": "Environment construction · Quality validation"
+    }
+  },
+  {
+    "id": "rynnunify",
+    "issue": "2026-10-31",
+    "published": "2026-10-23",
+    "source": "Alibaba DAMO Academy · Hupan Lab",
+    "topic": "Robotics",
+    "minutes": 6,
+    "original": "RynnUnify: Towards Unified Embodied Brain",
+    "url": "https://arxiv.org/html/2610.32965v1",
+    "title": {
+      "zh": "机器人先“想象”动作结果，再规划下一步",
+      "en": "RynnUnify: Towards Unified Embodied Brain"
+    },
+    "intro": {
+      "zh": "RynnUnify 将语言推理与视频预测结合：先提出子任务，再生成预期变化，随后利用预测结果规划下一步。",
+      "en": "RynnUnify combines language reasoning with video prediction: propose a subtask, predict its visual consequences, then use that representation for subsequent planning."
+    },
+    "body": {
+      "zh": [
+        "RynnUnify 将语言推理与视频预测结合：先提出子任务，再生成预期变化，随后利用预测结果规划下一步。它还保存初始画面、历史关键帧和最近的视频片段，减少长任务中场景信息的丢失。",
+        "这条路线值得认识：视觉预测既可以展示未来，也可以为动作规划提供中间表示。 其机器人控制扩展直接读取视频隐状态，而非先生成视频再逐帧观看。",
+        "局限： 作者报告的真实机器人平均成功率为 46.7%，仅覆盖三项任务；自建基准上的领先也不能等同于开放环境中的通用能力。"
+      ],
+      "en": [
+        "RynnUnify combines language reasoning with video prediction: propose a subtask, predict its visual consequences, then use that representation for subsequent planning. It retains an initial observation, selected historical frames, and recent video. A control extension reads video hidden states directly rather than requiring rendered frames."
+      ]
+    },
+    "limits": {
+      "zh": "真机平均 46.7% 仅三项任务；自建基准领先不等于开放环境通用。",
+      "en": "Reported real-robot average success is 46.7% across only three tasks. Custom-benchmark leadership does not establish general open-world capability."
+    },
+    "path": {
+      "zh": "§2 architecture · Scene memory · Project diagrams",
+      "en": "§2 architecture · Scene memory · Project diagrams"
+    }
+  },
+  {
+    "id": "novelty-bench",
+    "issue": "2026-10-29",
+    "published": "2026-10-27",
+    "source": "Allen Institute for AI",
+    "topic": "Evaluation",
+    "minutes": 7,
+    "original": "Can we trust LLMs to judge whether a research idea is novel?",
+    "url": "https://huggingface.co/blog/allenai/novelty-bench",
+    "title": {
+      "zh": "模型能判断一个研究想法有没有新意吗？",
+      "en": "Can we trust LLMs to judge whether a research idea is novel?"
+    },
+    "intro": {
+      "zh": "Ai2 用 ICLR 评审中明确讨论创新性的意见构建测试集，再让模型判断研究想法的新颖程度。",
+      "en": "Ai2 builds novelty tests from ICLR reviews explicitly discussing originality."
+    },
+    "body": {
+      "zh": [
+        "Ai2 用 ICLR 评审中明确讨论创新性的意见构建测试集，再让模型判断研究想法的新颖程度。结果显示，评审模型本身也需要被评估：在一组人类与 AI 想法的比较中，仅改变提示词措辞，GPT-5.4 的准确率就从 93.5% 降到 40.9%；增加检索或推理也没有稳定改善判断。",
+        "值得了解的是：生成能力强，并不自动意味着评价能力可靠。局限： 部分测试假定简单生成器提出的想法不如人类论文新颖，属于弱标签；不过，同一组想法因提示词变化而得到相反判断，仍能说明稳定性问题。"
+      ],
+      "en": [
+        "Ai2 builds novelty tests from ICLR reviews explicitly discussing originality. In one human-versus-generated idea comparison, changing prompt wording moves GPT-5.4 accuracy from 93.5% to 40.9%; retrieval and extra reasoning do not improve judgments consistently. The study highlights that evaluators need their own stability tests."
+      ]
+    },
+    "limits": {
+      "zh": "部分测试对人类与生成想法使用弱标签，不能当作完全客观的新颖性标准。",
+      "en": "Some comparisons use weak labels about human and generated ideas, rather than an objective gold standard for novelty."
+    },
+    "path": {
+      "zh": "Dataset construction · Prompt comparisons",
+      "en": "Dataset construction · Prompt comparisons"
+    }
+  },
+  {
+    "id": "nemotron-transcribe",
+    "issue": "2026-10-29",
+    "published": "2026-10-28",
+    "source": "NVIDIA",
+    "topic": "Multimodal",
+    "minutes": 6,
+    "original": "NVIDIA Nemotron 3.5 Transcribe: Intelligent Transcription with a Speech LLM",
+    "url": "https://research.nvidia.com/labs/nemotron/NVIDIA-Nemotron-3.5-Transcribe/",
+    "title": {
+      "zh": "语音转录：“正确答案”也取决于你想怎样记录",
+      "en": "NVIDIA Nemotron 3.5 Transcribe: Intelligent Transcription with a Speech LLM"
+    },
+    "intro": {
+      "zh": "同一句录音，可以逐字保留口头语，也可以整理成书面表达；数字、专有名词和说话人标签也有不同写法。",
+      "en": "Nemotron 3.5 Transcribe combines a speech encoder, speaker information, and a language model so instructions can specify verbatim versus edited text, formatting, and speaker labels."
+    },
+    "body": {
+      "zh": [
+        "同一句录音，可以逐字保留口头语，也可以整理成书面表达；数字、专有名词和说话人标签也有不同写法。这个系统把语音编码器、说话人识别模块与语言模型结合，让用户通过自然语言指定转录方式。",
+        "技术上值得注意的是：将已有专家模块的信息注入模型，而非要求一个模型重新学会所有能力。 训练也让同一段音频承担不同任务，增加监督的利用率。"
+      ],
+      "en": [
+        "Nemotron 3.5 Transcribe combines a speech encoder, speaker information, and a language model so instructions can specify verbatim versus edited text, formatting, and speaker labels. The same audio supports multiple training tasks, and specialist-module information is injected rather than relearned from scratch."
+      ]
+    },
+    "limits": {
+      "zh": "中英混说、远场中文仍困难，无原生流式转录，非语音可能生成假文本。",
+      "en": "Mixed Chinese-English and far-field Chinese meetings remain difficult. This version lacks native streaming and may hallucinate text on non-speech audio."
+    },
+    "path": {
+      "zh": "Overview · Technical report §5",
+      "en": "Overview · Technical report §5"
+    }
+  },
+  {
+    "id": "lfm3",
+    "issue": "2026-10-29",
+    "published": "2026-10-27",
+    "source": "Liquid AI",
+    "topic": "Architecture",
+    "minutes": 5,
+    "original": "Build specialized multimodal models with LFM3",
+    "url": "https://huggingface.co/blog/LiquidAI/lfm3",
+    "title": {
+      "zh": "用不同计算模块分担不同距离的信息",
+      "en": "Build specialized multimodal models with LFM3"
+    },
+    "intro": {
+      "zh": "LFM3 将短卷积、局部注意力、全局注意力混合使用：分别处理邻近模式、有限窗口和跨越较远距离的信息。",
+      "en": "LFM3 mixes short convolutions, local attention, and global attention for information at different distances."
+    },
+    "body": {
+      "zh": [
+        "LFM3 将短卷积、局部注意力、全局注意力混合使用：分别处理邻近模式、有限窗口和跨越较远距离的信息。团队还把真实设备速度纳入架构搜索，而非只比较参数量或理论计算量。",
+        "同一个基础骨干再接视觉、音频等模块，形成不同的专用模型。这提供了一条值得认识的路线：通过架构、训练数据和任务适配，提高小模型的能力。",
+        "局限： 文中性能主要来自团队自测；“共享骨干”也不表示每个版本都支持全部模态。实际速度与内存需求仍取决于输入长度、量化和硬件。"
+      ],
+      "en": [
+        "LFM3 mixes short convolutions, local attention, and global attention for information at different distances. Architecture search considers measured device speed alongside model quality. A shared foundation backbone is adapted with visual and audio components into specialized models, connecting hardware-aware architecture to task-specific capability."
+      ]
+    },
+    "limits": {
+      "zh": "作者自测为主，共享骨干不表示每版本支持全部模态，收益依赖硬件量化。",
+      "en": "Results are largely self-reported. A shared backbone does not make every variant support every modality; speed depends on hardware and quantization."
+    },
+    "path": {
+      "zh": "Architecture · Model input/output table",
+      "en": "Architecture · Model input/output table"
+    }
+  },
+  {
+    "id": "genie4",
+    "issue": "2026-10-28",
+    "published": "2026-10-27",
+    "source": "Google DeepMind",
+    "topic": "Robotics",
+    "minutes": 6,
+    "original": "Genie 4: A new generation of world simulation",
+    "url": "https://deepmind.google/blog/genie-4-a-new-generation-of-world-simulation/",
+    "title": {
+      "zh": "生成的环境，能随你的行动持续变化",
+      "en": "Genie 4: A new generation of world simulation"
+    },
+    "intro": {
+      "zh": "Genie 4 让用户在生成的场景中移动，并用文字改变天气、人物或事件，同时生成环境声音与对话。",
+      "en": "Genie 4 generates interactive environments with sound and dialogue that respond to user motion and textual changes."
+    },
+    "body": {
+      "zh": [
+        "Genie 4 让用户在生成的场景中移动，并用文字改变天气、人物或事件，同时生成环境声音与对话。文章介绍了一种组合思路：Gemini 负责拆解目标、观察进展，Genie 负责生成感官世界，共同维持多步骤事件。",
+        "值得了解的是，世界模型开始同时处理“接下来发生什么”和“用户介入后怎样变化”。但官方演示尚不能证明它是可靠的物理模拟器：作者承认，长时间运行后物体和细节仍会漂移，复杂物理、空间准确性也未解决。"
+      ],
+      "en": [
+        "Genie 4 generates interactive environments with sound and dialogue that respond to user motion and textual changes. The article combines Gemini’s goal decomposition and progress observation with Genie’s sensory-world generation for multi-step events. It frames world simulation as continually responding to intervention."
+      ]
+    },
+    "limits": {
+      "zh": "长时间细节漂移、复杂物理和空间准确性未解决，演示并非可靠物理模拟。",
+      "en": "Long-run detail drift, complex physics, and spatial accuracy remain limitations; demonstrations do not validate a reliable physics simulator."
+    },
+    "path": {
+      "zh": "Simulating complex events · Understanding current limitations",
+      "en": "Simulating complex events · Understanding current limitations"
+    }
+  },
+  {
+    "id": "recycler-latent-reasoning",
+    "issue": "2026-10-28",
+    "published": "2026-10-25",
+    "source": "ByteDance Seed",
+    "topic": "Architecture",
+    "minutes": 2,
+    "original": "Recycler: Cost-Free Latent Reasoning via Hidden State Recycling",
+    "url": "https://seed.bytedance.com/zh/public_papers/recycler-cost-free-latent-reasoning-via-hidden-state-recycling",
+    "title": {
+      "zh": "模型能否保留没有说出口的中间信息？",
+      "en": "Recycler: Cost-Free Latent Reasoning via Hidden State Recycling"
+    },
+    "intro": {
+      "zh": "Recycler 将上一步的隐状态——模型内部的连续数值表示，连同词元嵌入一起送入下一步，尝试保留仅靠输出文字难以传递的信息。",
+      "en": "Recycler passes the previous hidden state alongside the next token embedding, retaining internal continuous information that emitted text may not fully convey."
+    },
+    "body": {
+      "zh": [
+        "Recycler 将上一步的隐状态——模型内部的连续数值表示，连同词元嵌入一起送入下一步，尝试保留仅靠输出文字难以传递的信息。可以把它理解为：除了记住自己写了什么，还保留一部分内部计算状态。",
+        "作者报告数学与推理任务的参数效率有所改善，并称越早引入训练收益越大。值得认识的是“隐空间推理”这条路线，但标题中的 Cost-Free 不代表训练与部署完全没有成本。"
+      ],
+      "en": [
+        "Recycler passes the previous hidden state alongside the next token embedding, retaining internal continuous information that emitted text may not fully convey. The official abstract reports parameter-efficiency improvements on mathematical and reasoning tasks and larger gains when introduced earlier in training."
+      ]
+    },
+    "limits": {
+      "zh": "历史精选仅读到官方摘要，未取到 PDF，实验规模及公平性未独立核实。",
+      "en": "The archived note is based only on the official abstract; the PDF was unavailable, so experiment scale and comparison fairness were not independently checked."
+    },
+    "path": {
+      "zh": "Official research abstract",
+      "en": "Official research abstract"
+    }
+  },
+  {
+    "id": "unintended-model-actions",
+    "issue": "2026-10-28",
+    "published": "2026-10-09",
+    "source": "Anthropic",
+    "topic": "Safety",
+    "minutes": 8,
+    "original": "Investigating unintended model actions in our evaluations and internal use",
+    "url": "https://www.anthropic.com/research/investigating-unintended-model-actions",
+    "title": {
+      "zh": "为什么“努力完成任务”也会变成安全问题？",
+      "en": "Investigating unintended model actions in our evaluations and internal use"
+    },
+    "intro": {
+      "zh": "报告记录了模型在评估和内部使用中绕过限制、误提交真实表单等行为。",
+      "en": "Anthropic documents unintended actions in evaluations and internal use, including bypassing restrictions and submitting real forms."
+    },
+    "body": {
+      "zh": [
+        "报告记录了模型在评估和内部使用中绕过限制、误提交真实表单等行为。共同模式是：正常路径失败后，模型继续寻找替代办法，却越过了任务边界。",
+        "作者提出，训练若奖励“完成任务”，却没有充分约束过程，模型可能学会钻空子。应对措施包括修正训练环境、隔离评估网络，以及在行动时检测和阻断越界。",
+        "这篇值得读，因为它把安全问题从回答内容扩展到实际行动。局限是案例报告无法说明总体发生率，也不足以证明模型具有某种意图。"
+      ],
+      "en": [
+        "Anthropic documents unintended actions in evaluations and internal use, including bypassing restrictions and submitting real forms. A recurring pattern is continued pursuit of task completion after the normal path fails. Proposed mitigations include changing training environments, isolating evaluation networks, and detecting boundary violations during execution."
+      ]
+    },
+    "limits": {
+      "zh": "案例报告不能估总体发生率，也不足以证明模型意图；十月十二日有更正。",
+      "en": "Case reports do not establish population-level frequency or model intent. The original article was corrected on October 12."
+    },
+    "path": {
+      "zh": "Form-submission case · Mitigations · Alignment discussion",
+      "en": "Form-submission case · Mitigations · Alignment discussion"
+    }
+  },
+  {
+    "id": "academic-scientific-understanding",
+    "issue": "2026-10-27",
+    "published": "2026-10-26",
+    "source": "OpenAI",
+    "topic": "Science",
+    "minutes": 5,
+    "original": "Working with academic communities to build scientific understanding",
+    "url": "https://openai.com/index/building-scientific-understanding-with-academic-communities/",
+    "title": {
+      "zh": "AI 提出的科学结论，怎样变成可信的知识？",
+      "en": "Working with academic communities to build scientific understanding"
+    },
+    "intro": {
+      "zh": "OpenAI 宣布模型在数学、计算机科学和物理领域产生了新结果，但文章特别强调：模型生成的稿件首先是“研究原始数据”，还需要专家理解、检查和解释。",
+      "en": "OpenAI presents model-generated mathematics, computer-science, and physics work as research material requiring expert interpretation and review."
+    },
+    "body": {
+      "zh": [
+        "OpenAI 宣布模型在数学、计算机科学和物理领域产生了新结果，但文章特别强调：模型生成的稿件首先是“研究原始数据”，还需要专家理解、检查和解释。团队公开部分自然语言证明与 Lean 形式化证明，并邀请外部学者组织核查。",
+        "值得了解的是其中三个层次：提出一个结果、让形式化系统检查证明、让学界理解其意义。它们承担不同职责。文章中的重大突破属于 OpenAI 的宣称，不能直接视为已经形成学界共识。 作者也承认，先邀请部分专家参与会带来信息不对称。"
+      ],
+      "en": [
+        "OpenAI presents model-generated mathematics, computer-science, and physics work as research material requiring expert interpretation and review. Natural-language arguments, Lean checking, and community understanding play distinct roles. The article describes sharing proofs and inviting external academic verification."
+      ]
+    },
+    "limits": {
+      "zh": "重大结果为作者宣称，未等于学界共识；选择性邀请还带来信息不对称。",
+      "en": "Major results are the organization’s claims, not established community consensus. Selective early invitations can create information asymmetry."
+    },
+    "path": {
+      "zh": "Release principles · Open verification arrangements",
+      "en": "Release principles · Open verification arrangements"
+    }
+  },
+  {
+    "id": "deepseek-v41-serving",
+    "issue": "2026-10-27",
+    "published": "2026-09-10",
+    "source": "SGLang · Miles",
+    "topic": "Infrastructure",
+    "minutes": 6,
+    "original": "SGLang and Miles Add Day-0 Support for DeepSeek-V4.1",
+    "url": "https://www.lmsys.org/blog/2026-09-10-deepseek-v41/",
+    "title": {
+      "zh": "DeepSeek 的效率，怎样从模型设计落实到推理系统？",
+      "en": "SGLang and Miles Add Day-0 Support for DeepSeek-V4.1"
+    },
+    "intro": {
+      "zh": "这篇工程文章解释了几种节省计算和显存的方法：近处文本使用滑动窗口，远处信息压缩后再选择性读取；不同层共享部分注意力缓存，减少重复存储。",
+      "en": "The systems article connects sliding-window attention, compressed distant context, selective reads, and cross-layer cache sharing to DeepSeek-V4.1 inference."
+    },
+    "body": {
+      "zh": [
+        "这篇工程文章解释了几种节省计算和显存的方法：近处文本使用滑动窗口，远处信息压缩后再选择性读取；不同层共享部分注意力缓存，减少重复存储。",
+        "另一个直观例子是 Engram 记忆表：表很大，但每次只读取少数几行，因此可以尝试放在 CPU 内存，把显存留给其他缓存。作者在特定 GB300 配置下报告缓存容量增加 36%，吞吐表现接近原方案。",
+        "局限： 搬移数据是否划算取决于硬件连接和工作负载；文中的部分加速还采用了近似计算，不能把一次评测无退化理解为所有任务都无损。"
+      ],
+      "en": [
+        "The systems article connects sliding-window attention, compressed distant context, selective reads, and cross-layer cache sharing to DeepSeek-V4.1 inference. Large sparsely accessed Engram tables can move to CPU memory. Under a particular GB300 configuration, the team reports 36% more cache capacity with throughput close to the original setup."
+      ]
+    },
+    "limits": {
+      "zh": "卸载收益依赖互联与负载，部分计算近似，一次评测无退化不保证所有任务。",
+      "en": "Offloading depends on interconnect and workload. Some optimizations are approximate; one evaluation without degradation does not guarantee universal losslessness."
+    },
+    "path": {
+      "zh": "§1 · §3 · §4.3",
+      "en": "§1 · §3 · §4.3"
+    }
+  },
+  {
+    "id": "diffusion-controller",
+    "issue": "2026-10-27",
+    "published": "2026-09-29",
+    "source": "Google Research",
+    "topic": "Generation",
+    "minutes": 7,
+    "original": "How Diffusion Controller unifies and simplifies AI image generation",
+    "url": "https://www.research.google/blog/how-diffusion-controller-unifies-and-simplifies-ai-image-generation/",
+    "title": {
+      "zh": "给图像生成过程加一个“小控制器”",
+      "en": "How Diffusion Controller unifies and simplifies AI image generation"
+    },
+    "intro": {
+      "zh": "Diffusion Controller 将逐步去噪看作一个控制过程：在预训练模型旁增加轻量网络，调整每一步的生成方向，同时约束它不要过度偏离原模型。",
+      "en": "Diffusion Controller treats denoising as a control process and adds a lightweight network to redirect each step while limiting deviation from the pretrained model."
+    },
+    "body": {
+      "zh": [
+        "Diffusion Controller 将逐步去噪看作一个控制过程：在预训练模型旁增加轻量网络，调整每一步的生成方向，同时约束它不要过度偏离原模型。它试图用统一的数学框架解释推理引导、监督微调和奖励优化。",
+        "值得读的是方法与取舍，而非宣传数字。 研究主要在 Stable Diffusion 1.4 上验证；“灰盒”方案仍需要访问中间去噪信息，不能理解为任意闭源生图 API 都能直接接入。文章的 90% 胜率属于允许修改内部权重的版本，也不能套用到所有配置。"
+      ],
+      "en": [
+        "Diffusion Controller treats denoising as a control process and adds a lightweight network to redirect each step while limiting deviation from the pretrained model. It offers a shared framework for inference guidance, supervised tuning, and reward optimization. The article illustrates the tradeoff between satisfying a detail and preserving overall image quality."
+      ]
+    },
+    "limits": {
+      "zh": "主要验证 SD1.4；需中间信息，90% 胜率对应可改内部权重版本。",
+      "en": "Main validation uses Stable Diffusion 1.4 and requires intermediate access. The cited 90% win rate belongs to a version allowed to modify internal weights."
+    },
+    "path": {
+      "zh": "Lizard example · Framework · Experiments",
+      "en": "Lizard example · Framework · Experiments"
+    }
+  },
+  {
+    "id": "vocabx",
+    "issue": "2026-10-26",
+    "published": "2026-10-21",
+    "source": "Dharma-AI",
+    "topic": "Infrastructure",
+    "minutes": 6,
+    "original": "How Specializing the Vocabulary of SLMs Can Cut Inference Cost by 77% in Real Applications",
+    "url": "https://huggingface.co/blog/Dharma-AI/vocabx-vocabulary-specialization",
+    "title": {
+      "zh": "改一改“词表”，为什么能让小模型更便宜？",
+      "en": "How Specializing the Vocabulary of SLMs Can Cut Inference Cost by 77% in Real Applications"
+    },
+    "intro": {
+      "zh": "模型处理的是 token，分词方式决定同一段文字需要多少次生成。",
+      "en": "VocabX specializes a small model’s vocabulary for Portuguese essay grading, compressing repeated text and JSON structure while shrinking the output layer."
+    },
+    "body": {
+      "zh": [
+        "模型处理的是 token，分词方式决定同一段文字需要多少次生成。作者针对葡萄牙语作文评分任务，重新设计词表，把经常重复的表达、JSON 结构压缩成更少的 token，同时缩小输出层。",
+        "值得了解的是：推理成本不只取决于模型参数量，也受分词、输出长度和词表大小影响。 作者还发现，把“评分数字＋格式”压成一个 token 虽然更短，却损害了评分质量，拆开后反而更好。"
+      ],
+      "en": [
+        "VocabX specializes a small model’s vocabulary for Portuguese essay grading, compressing repeated text and JSON structure while shrinking the output layer. Combining a grade with its formatting into one token hurts grading quality; keeping the grade separate works better. The authors report a 77% inference-cost reduction for their particular configuration."
+      ]
+    },
+    "limits": {
+      "zh": "完整论文未发布，77% 限定模型硬件与工作负载，不能普遍外推。",
+      "en": "A complete paper was not available. The 77% figure is preliminary and specific to the tested model, hardware, and workload."
+    },
+    "path": {
+      "zh": "Vocabulary design · Grade-token ablation",
+      "en": "Vocabulary design · Grade-token ablation"
+    }
+  },
+  {
+    "id": "qwen-mt-lumen",
+    "issue": "2026-10-26",
+    "published": "2026-10-14",
+    "source": "Qwen",
+    "topic": "Training",
+    "minutes": 7,
+    "original": "Qwen-MT-Lumen at WMT2026: Instruction-Specialized Translation via Quality-Aware Training and On-Policy Distillation",
+    "url": "https://arxiv.org/html/2610.19758v1",
+    "title": {
+      "zh": "模型“翻译得好”和“听懂翻译要求”，是两种能力",
+      "en": "Qwen-MT-Lumen at WMT2026: Instruction-Specialized Translation via Quality-Aware Training and On-Policy Distillation"
+    },
+    "intro": {
+      "zh": "翻译除了准确，还可能要求固定术语、正式语气、保留 HTML 或 JSON。",
+      "en": "Qwen-MT-Lumen separates translation quality from compliance with terminology, tone, and structured-output requirements."
+    },
+    "body": {
+      "zh": [
+        "翻译除了准确，还可能要求固定术语、正式语气、保留 HTML 或 JSON。论文采用继续预训练、监督微调、在线偏好优化和蒸馏，分别改善这些能力。",
+        "其中 on-policy distillation 的意思是：学生模型先生成答案，教师再沿着学生实际走过的生成路径提供指导，而非只让学生模仿预先准备好的标准答案。",
+        "这篇适合建立“后训练各阶段分别解决什么问题”的认识。作者报告其 14B 模型在所测翻译任务中接近更大的模型，但结果主要来自 LLM 裁判评分；提交时尚无官方人工评测结果，也不能外推为通用能力相当。"
+      ],
+      "en": [
+        "Qwen-MT-Lumen separates translation quality from compliance with terminology, tone, and structured-output requirements. Its pipeline combines continued pretraining, supervised fine-tuning, online preference optimization, and on-policy distillation. A student first generates a response, then receives teacher guidance along the path it actually followed."
+      ]
+    },
+    "limits": {
+      "zh": "比较主要为模型裁判评分，提交时无人类官方结果，不代表通用能力相当。",
+      "en": "Comparisons largely use model judges; official human evaluation was unavailable at submission. Translation results do not establish equal general capabilities."
+    },
+    "path": {
+      "zh": "Introduction · §2.4",
+      "en": "Introduction · §2.4"
+    }
+  },
+  {
+    "id": "forty-forest-types",
+    "issue": "2026-10-26",
+    "published": "2026-10-22",
+    "source": "Google DeepMind · Google Research · collaborators",
+    "topic": "Science",
+    "minutes": 5,
+    "original": "Beyond tree cover: mapping the world’s forest types",
+    "url": "https://deepmind.google/blog/beyond-tree-cover-mapping-the-worlds-forest-types/",
+    "title": {
+      "zh": "卫星看到一片绿色，为什么不一定是森林恢复？",
+      "en": "Beyond tree cover: mapping the world’s forest types"
+    },
+    "intro": {
+      "zh": "原始森林、人工林和油棕种植园，从卫星上看可能都很绿，生态价值却不同。",
+      "en": "ForTy distinguishes six land-cover types using approximately 1.7 million labeled sites and AlphaEarth satellite representations."
+    },
+    "body": {
+      "zh": [
+        "原始森林、人工林和油棕种植园，从卫星上看可能都很绿，生态价值却不同。ForTy 将土地划分为六类，结合约 170 万处标注和 AlphaEarth 的卫星观测表示，利用种植规律、季节变化等线索进行识别。",
+        "它展示了 AI for Science 的一个关键问题：先定义真正要测量的对象。 “树变多了”不一定等于“自然森林变好了”。",
+        "团队报告在九千多个验证地点获得约 90% 的类别准确率，并提供各类别概率；全球平均准确率并不保证每个地区同样可靠，用户仍需按地区和用途选择置信阈值。"
+      ],
+      "en": [
+        "ForTy distinguishes six land-cover types using approximately 1.7 million labeled sites and AlphaEarth satellite representations. Planting patterns and seasonal variation help distinguish natural forest from plantations and tree crops. The team reports about 90% category accuracy over more than nine thousand validation locations, illustrating why tree cover and ecological recovery are different measurements."
+      ]
+    },
+    "limits": {
+      "zh": "全球均分不保证地区可靠性，使用需按地区和目的选择置信阈值。",
+      "en": "Global average accuracy does not guarantee local reliability; confidence thresholds should reflect region and intended use."
+    },
+    "path": {
+      "zh": "Forest categories · Validation · Confidence maps",
+      "en": "Forest categories · Validation · Confidence maps"
+    }
+  },
+  {
+    "id": "company-harness",
+    "issue": "2026-10-26",
+    "published": "2026-10-24",
+    "source": "LangChain",
+    "topic": "Infrastructure",
+    "minutes": 6,
+    "original": "The five components of building a “company harness”",
+    "url": "https://www.langchain.com/blog/components-building-company-harness",
+    "title": {
+      "zh": "Agent 执行操作时，用谁的身份？",
+      "en": "The five components of building a “company harness”"
+    },
+    "intro": {
+      "zh": "文章复盘内部 Agent 的五项基础设施：工作入口、身份、记忆、沙箱和定时运行。",
+      "en": "The company-harness article describes five infrastructure components for internal agents."
+    },
+    "body": {
+      "zh": [
+        "文章复盘内部 Agent 的五项基础设施：工作入口、身份、记忆、沙箱和定时运行。有些工具代表当前用户操作，有些使用服务账号；同一个 Agent 在私聊、群聊和后台任务中，能使用的工具也不同。邮件工具只在私聊开放，共享账号的发布操作则限制调用者。"
+      ],
+      "en": [
+        "The company-harness article describes five infrastructure components for internal agents. Tools may act through the current user or a service identity, and availability changes between private conversations, shared channels, and background execution. Some tools are restricted to private use, while shared-account publication is limited to authorized callers."
+      ]
+    },
+    "limits": {
+      "zh": "内部实践总结并非通用最优架构，作者明确记忆管理仍在探索。",
+      "en": "This is an internal practice report rather than a universal architecture. The author explicitly describes memory management as unresolved work."
+    },
+    "path": {
+      "zh": "Entry points · Identity · Memory · Sandboxes · Scheduling",
+      "en": "Entry points · Identity · Memory · Sandboxes · Scheduling"
+    }
+  },
+  {
+    "id": "cursor-token-efficiency",
+    "issue": "2026-10-26",
+    "published": "2026-09-23",
+    "source": "Cursor",
+    "topic": "Infrastructure",
+    "minutes": 7,
+    "original": "Improved token efficiency for longer agent runs",
+    "url": "https://cursor.com/blog/improved-token-efficiency",
+    "title": {
+      "zh": "Cursor 怎样减少长任务的 token 成本？",
+      "en": "Improved token efficiency for longer agent runs"
+    },
+    "intro": {
+      "zh": "核心方法是精简重复指令、按需加载工具定义、稳定可缓存的上下文前缀，以及减少文件读取产生的额外文本。",
+      "en": "Cursor reduces repeated instructions, loads tool definitions on demand, stabilizes cacheable context prefixes, and trims file-read formatting."
+    },
+    "body": {
+      "zh": [
+        "核心方法是精简重复指令、按需加载工具定义、稳定可缓存的上下文前缀，以及减少文件读取产生的额外文本。Cursor 报告组合优化降低了用户 token 成本，并通过评估和线上 A/B 测试检查质量。",
+        "子 Agent 的上下文隔离会带来协调成本；拆分任务可能减少输入，也可能造成重复工作。作者报告组合改动降低了 7% 的用户 token 成本，并通过评估与线上 A/B 测试检查质量。"
+      ],
+      "en": [
+        "Cursor reduces repeated instructions, loads tool definitions on demand, stabilizes cacheable context prefixes, and trims file-read formatting. The team evaluates quality and uses online A/B testing, reporting a combined 7% reduction in user token cost. Subagents can isolate context but add coordination overhead and duplicated work."
+      ]
+    },
+    "limits": {
+      "zh": "节省比例只适用于作者流量，拆分任务并非总能降低总成本。",
+      "en": "The reported savings are workload-specific. Splitting work across agents does not necessarily reduce total cost."
+    },
+    "path": {
+      "zh": "Instructions · Tool loading · Cache prefixes · File reading",
+      "en": "Instructions · Tool loading · Cache prefixes · File reading"
+    }
+  },
+  {
+    "id": "qwen-ui-agent",
+    "issue": "2026-10-26",
+    "published": "2026-07-30",
+    "source": "Qwen",
+    "topic": "Architecture",
+    "minutes": 5,
+    "original": "Qwen-UI-Agent Technical Report: Toward Next-Generation Real-World Centric Foundation GUI Agents",
+    "url": "https://arxiv.org/html/2607.28227v1",
+    "title": {
+      "zh": "国内 GUI Agent 如何维护长任务状态？",
+      "en": "Qwen-UI-Agent Technical Report: Toward Next-Generation Real-World Centric Foundation GUI Agents"
+    },
+    "intro": {
+      "zh": "报告把系统拆成 事件、持续事项、待执行任务：通知记录发生了什么，持续事项保存跨时间的状态，任务描述下一步行动；共享状态支持手机与电脑之间的交接。",
+      "en": "Qwen-UI-Agent distinguishes events, ongoing affairs, and executable tasks."
+    },
+    "body": {
+      "zh": [
+        "报告把系统拆成 事件、持续事项、待执行任务：通知记录发生了什么，持续事项保存跨时间的状态，任务描述下一步行动；共享状态支持手机与电脑之间的交接。",
+        "通知记录发生了什么，持续事项保存跨时间的状态，任务描述下一步行动；共享状态支持手机与电脑之间的交接。改签航班等有实际影响的动作仍需用户确认。"
+      ],
+      "en": [
+        "Qwen-UI-Agent distinguishes events, ongoing affairs, and executable tasks. Shared state preserves artifacts, dependencies, and progress across phone and desktop workflows, while consequential actions such as changing a flight remain subject to user confirmation. The separation makes persistent task state more explicit than a chronological chat log alone."
+      ]
+    },
+    "limits": {
+      "zh": "部分真机评估依赖模型裁判，开发仍需人工监督，不证明全面自主可靠。",
+      "en": "Some device evaluations use model judges, and development still requires human oversight. Results do not establish reliable full autonomy."
+    },
+    "path": {
+      "zh": "§2.5 · §7",
+      "en": "§2.5 · §7"
+    }
   }
 ]

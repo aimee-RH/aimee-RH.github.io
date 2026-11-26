@@ -17,6 +17,8 @@ Open http://127.0.0.1:8765/ or `/en/`.
 
 ## Add a daily reading note
 
+The archive was backfilled on November 25, 2026: 87 unique readings from 29 completed digest editions, spanning October 26–November 24, including both October 26 editions. Chinese summaries were migrated from the earlier digests and English summaries were added. Original publication dates and curation dates remain distinct; gaps without a completed digest were not filled with invented entries. Existing article IDs and author-written notes were preserved.
+
 Add an object to `content/articles.json`, following the existing schema. Each note needs a stable unique `id`, an edition date (`issue`), the original publication date (`published`), a direct HTTPS source link, and complete Chinese/English text. Do not change existing IDs: links, comments, and scratchpads use them.
 
 Run the tests and commit to `main`. GitHub Actions builds and deploys automatically. `_site/` is generated and is not committed.
