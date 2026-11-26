@@ -1,5 +1,113 @@
 [
   {
+    "id": "qwen-image-hd",
+    "issue": "2026-11-26",
+    "published": "2026-11-24",
+    "source": "Qwen",
+    "topic": "Generation",
+    "minutes": 7,
+    "original": "Qwen-Image-HD: Autoregressive Diffusion for High Definition Image Generation",
+    "url": "https://arxiv.org/html/2611.32736v1",
+    "title": {
+      "zh": "分块生成高清图像，怎样照顾整张画面？",
+      "en": "Generating high-resolution images a tile at a time"
+    },
+    "intro": {
+      "zh": "用局部边缘与整图缩略图提供不同尺度的上下文，再按依赖关系并行生成。",
+      "en": "Local boundaries and a canvas thumbnail supply complementary context for tile generation."
+    },
+    "body": {
+      "zh": [
+        "Qwen-Image-HD 每次生成约 1K 大小的图块，同时读取上方、左方邻块的边缘和已完成画面的缩略图。共享画布坐标把这些不同尺度的输入对齐，避免保存所有历史高清图块。",
+        "同一反对角线上的图块没有直接的上下依赖，可以并行生成。论文在相同四张 GPU 的 4K 测试中，将串行方案的平均延迟从 166 秒降至 139 秒。"
+      ],
+      "en": [
+        "Qwen-Image-HD generates 1K tiles using upper/left boundary detail and a fixed-size thumbnail of the completed canvas. Shared coordinates align the two scales without retaining all previous high-resolution tokens.",
+        "Wavefront scheduling generates tiles on an anti-diagonal concurrently. With the same four-GPU budget, reported mean 4K latency falls from 166 seconds for Serial to 139 seconds for optimized Wavefront."
+      ]
+    },
+    "limits": {
+      "zh": "并行方案的 Q-Judger 总分从 59.44 降至 58.52。模型裁判分数不是人工偏好；计时不含加载和预热，跨块协调也仍有取舍。",
+      "en": "Q-Judger Overall falls from 59.44 to 58.52. This model-judged score is not human preference. Timing excludes loading and warmup; cross-tile coordination remains a tradeoff."
+    },
+    "path": {
+      "zh": "图 2 · §3.2–3.5 · 表 4",
+      "en": "Figure 2 · §3.2–3.5 · Table 4"
+    }
+  },
+  {
+    "id": "mancelle-control-channel",
+    "issue": "2026-11-26",
+    "published": "2026-11-24",
+    "source": "MIT · Harvard · Cambridge-Boston Alignment Initiative",
+    "topic": "Safety",
+    "minutes": 6,
+    "original": "Steerable by Design: Conditional Pretraining for Robust Control of Language Models",
+    "url": "https://arxiv.org/html/2611.32199v1",
+    "title": {
+      "zh": "让模型从预训练开始，学会使用独立控制通道。",
+      "en": "Learning a separate control channel during pretraining"
+    },
+    "intro": {
+      "zh": "把目标行为的语义特征单独编码，让控制不只依靠文字提示。",
+      "en": "Semantic features provide a learned control path separate from ordinary text tokens."
+    },
+    "body": {
+      "zh": [
+        "Mancelle 在预训练时提取文本片段的语义特征，用独立编码器处理，再通过交叉注意力影响文本生成。模型从一开始就学习依赖这个通道，而不是训练完成后才额外加控制向量。",
+        "作者在 3B 模型及同数据训练的 400M 对照中，报告目标概念在多种提示攻击后保留得更好。测试同时检查概念相关性、指令遵循和流畅度，使用模型裁判评分。"
+      ],
+      "en": [
+        "Mancelle conditions pretraining on semantic features processed by a separate encoder and read through cross-attention. Control is learned early rather than added only after training.",
+        "The authors report more persistent concept steering under input-channel attacks in 3B experiments and a matched-data 400M study. Evaluation uses model judgments of concept relevance, instruction following, and fluency."
+      ]
+    },
+    "limits": {
+      "zh": "概念控制不等于全面安全保证。部分通用能力低于基线；直接修改内部表示仍能削弱控制，语义特征标注也有额外成本。",
+      "en": "Concept steering is not a general safety guarantee. Some capability scores trail baselines; direct internal interventions weaken control, and feature annotation adds cost."
+    },
+    "path": {
+      "zh": "图 1 · §3 · §5.4–5.5",
+      "en": "Figure 1 · §3 · §5.4–5.5"
+    }
+  },
+  {
+    "id": "antom-payment-foundation",
+    "issue": "2026-11-26",
+    "published": "2026-11-19",
+    "source": "Ant International",
+    "topic": "Training",
+    "minutes": 5,
+    "original": "Antom 3-in-1 Transformer: A Payment Foundation Model",
+    "url": "https://arxiv.org/html/2611.25403v1",
+    "title": {
+      "zh": "基础模型，也可以学习交易行为与关系。",
+      "en": "A foundation model for payment behavior and relationships"
+    },
+    "intro": {
+      "zh": "近期补读：把交易序列、表格字段和用户关系结合，学习可跨业务复用的风险表示。",
+      "en": "Recent reading: combining event sequences, tabular fields, and relationships for reusable risk representations."
+    },
+    "body": {
+      "zh": [
+        "Antom 分别编码交易历史、当前支付属性和用户关系，再按任务融合。它先用历史前缀与未来活动摘要的匹配等自监督目标预训练，再用风险标签适配不同业务，并不以生成文字为目标。",
+        "作者报告，在相同 0.5% 干预预算的线上比较中，相对 XGB-Online，总体损失率降低 37.88%。少标签实验也展示了预训练表示的复用价值。"
+      ],
+      "en": [
+        "Antom separately encodes histories, tabular payment attributes, and entity relationships, then fuses them by task. Self-supervised pretraining includes matching history prefixes with summaries of subsequent behavior, followed by business-specific adaptation.",
+        "At a matched 0.5% intervention budget, the authors report 37.88% lower overall loss rate than XGB-Online in their platform experiment. Limited-label studies also examine representation reuse."
+      ]
+    },
+    "limits": {
+      "zh": "平台数据、训练配置和架构细节未完整公开，难以独立复现；公司内部线上收益也不能直接外推至其他支付平台。",
+      "en": "Internal data and full training and architecture details are not public, limiting independent replication. Gains on this platform cannot be assumed elsewhere."
+    },
+    "path": {
+      "zh": "图 1 · §2 · §4.2",
+      "en": "Figure 1 · §2 · §4.2"
+    }
+  },
+{
     "id": "learning-our-own-hallucinations", "issue": "2026-11-24", "published": "2026-11-19", "source": "Cornell University", "topic": "Training", "minutes": 7,
     "original": "LLMs Memorize Their Own Hallucinations During Post-Training", "url": "https://arxiv.org/html/2611.26863v1",
     "title": {"zh": "模型，会把自己编造的错误学进去吗？", "en": "Can a model learn its own mistakes as facts?"},
