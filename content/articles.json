@@ -1,5 +1,113 @@
 [
   {
+    "id": "docseam-cross-page",
+    "issue": "2026-11-27",
+    "published": "2026-11-25",
+    "source": "NTU S-Lab · Synvo AI",
+    "topic": "Multimodal",
+    "minutes": 7,
+    "original": "DocSEAM: Bidirectional Cross-Page Encoding for Multi-Page Document Understanding",
+    "url": "https://arxiv.org/html/2611.34420v1",
+    "title": {
+      "zh": "同一张表格换个分页位置，模型为什么会读错？",
+      "en": "Why moving a page break can change a document answer"
+    },
+    "intro": {
+      "zh": "在视觉编码之后，让每页先与前后邻页交换信息，再交给语言模型。",
+      "en": "Pages exchange local context before their visual representations reach the language model."
+    },
+    "body": {
+      "zh": [
+        "逐页独立编码时，跨页表格和段落会被切成孤立的视觉表示。DocSEAM 把当前页与前后页组成三页窗口，用注意力和方向门控交换有用信息，最后只输出增强后的当前页词元，保持语言模型输入长度不变。",
+        "作者在相同内容的重新分页测试中，比较保留结构与切断表格、段落两种切法。在 LongDocURL 上，原模型的额外分页损失为 2.3 个百分点，DocSEAM 为 0.7 个百分点。"
+      ],
+      "en": [
+        "DocSEAM enriches each page using a three-page neighborhood after visual encoding. Center-anchored attention and directional gates exchange relevant context, then return only the center-page tokens without lengthening the language model’s input.",
+        "In a controlled LongDocURL re-pagination test, the difference between structure-preserving and structure-breaking cuts is 2.3 percentage points for the original baseline and 0.7 for DocSEAM."
+      ]
+    },
+    "limits": {
+      "zh": "输入词元不增加仍有计算开销：20 页、9B 模型的一项测试增加约 8% 延迟。不同骨干收益不一致，部分 4B 任务分数反而下降。",
+      "en": "Fixed token count is not free computation: one twenty-page 9B test adds about 8% latency. Gains vary by backbone, with regressions on some 4B tasks."
+    },
+    "path": {
+      "zh": "图 2 · §3 · 表 3 · 附录 F",
+      "en": "Figure 2 · §3 · Table 3 · Appendix F"
+    }
+  },
+  {
+    "id": "mixture-of-loops",
+    "issue": "2026-11-27",
+    "published": "2026-11-25",
+    "source": "ByteDance Seed · HUST · University of Toronto",
+    "topic": "Architecture",
+    "minutes": 6,
+    "original": "Mixture-of-Loops Transformer",
+    "url": "https://arxiv.org/pdf/2611.34923",
+    "title": {
+      "zh": "反复使用同一组模型层，各轮之间传什么？",
+      "en": "What should a shared model pass between loops?"
+    },
+    "intro": {
+      "zh": "把各轮计算的键值表示作为可复用记忆，拆开记忆构建与预测读出。",
+      "en": "Reusable key-value memory connects loops, while memory construction and prediction readout are separated."
+    },
+    "body": {
+      "zh": [
+        "循环 Transformer 反复运行共享权重的网络层。MoLT 不只传递上一轮的隐状态，还让后续计算读取之前轮次和深度产生的键值记忆；U 型版本将记忆构建与预测读出分开，省去不影响最终预测的解码计算。",
+        "在 700M 对照中，U-MoLT 用约 232.8B 训练词元达到普通模型 400B 词元时的验证损失，作者据此报告约 1.7 倍词元效率。"
+      ],
+      "en": [
+        "MoLT makes keys and values reusable across loops and depths of a shared-weight Transformer. Its U-shaped variant separates memory construction from prediction readout, omitting decoder traversals that do not affect final predictions.",
+        "In a 700M comparison, U-MoLT reaches the baseline’s 400B-token validation loss at about 232.8B tokens, reported as roughly 1.7× token efficiency."
+      ]
+    },
+    "limits": {
+      "zh": "同样训练 400B 词元时，总耗时约为对照的 1.99 倍；词元效率不等于计算效率。完全匹配计算预算仍需专门实验，接近普通模型的延迟也只在约 113M 小模型上验证。",
+      "en": "At the same 400B tokens, runtime is about 1.99× baseline. Token efficiency is not compute efficiency; a dedicated equal-compute run remains needed. Latency parity was tested on roughly 113M models."
+    },
+    "path": {
+      "zh": "图 1 · §3.3–3.4 · 附录 A 表 11",
+      "en": "Figure 1 · §3.3–3.4 · Appendix A, Table 11"
+    }
+  },
+  {
+    "id": "look-back-counterfactual",
+    "issue": "2026-11-27",
+    "published": "2026-11-22",
+    "source": "NYU · KAIST · MIT",
+    "topic": "Training",
+    "minutes": 5,
+    "original": "Look Back: Reinforcement Learning with Counterfactual World Models",
+    "url": "https://arxiv.org/html/2611.29259v1",
+    "title": {
+      "zh": "动作真的选得好，还是这次运气好？",
+      "en": "Learning to distinguish a good action from good luck"
+    },
+    "intro": {
+      "zh": "近期补读：回看一次真实经历，在相同环境随机性下比较另一个动作。",
+      "en": "Recent reading: compare another action against an observed experience while preserving environmental randomness."
+    },
+    "body": {
+      "zh": [
+        "普通世界模型可能在想象新动作时，连随机出现的障碍物也一起改变。反事实世界模型以真实经历为参照，尝试只改变动作后果，保留这一次遭遇的环境随机性。",
+        "REINFORCE Look Back 用替代动作的回报作为训练基线，减少运气对学习信号的干扰。作者在合成任务与改造的 Chrome 小恐龙游戏中验证，并分析了降低方差所需的条件。"
+      ],
+      "en": [
+        "A counterfactual world model conditions on an observed trajectory to predict alternative actions under the same environmental randomness, rather than imagining an unrelated new trajectory.",
+        "REINFORCE Look Back uses counterfactual returns as policy-gradient baselines to reduce environmental luck in the learning signal. Experiments cover synthetic tasks and a modified Chrome Dino game, alongside conditions for variance reduction."
+      ]
+    },
+    "limits": {
+      "zh": "精确反事实下的无偏性质不保证近似模型也无偏。额外 PPO 对照的平均碰撞率与精确模拟版 RLB 接近；不能据此声称普遍胜过常用强化学习方法。",
+      "en": "Unbiasedness under exact counterfactuals does not remove learned-model bias. A supplementary PPO baseline has similar mean collision rate to simulator-based RLB, so broad superiority is not established."
+    },
+    "path": {
+      "zh": "图 7 · §5.3 · 附录 D.4",
+      "en": "Figure 7 · §5.3 · Appendix D.4"
+    }
+  },
+{
     "id": "qwen-image-hd",
     "issue": "2026-11-26",
     "published": "2026-11-24",
